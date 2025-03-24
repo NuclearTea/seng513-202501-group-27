@@ -1,0 +1,24 @@
+.file-list-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-list-container h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.file-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.file-list li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.file-list li:hover {
+  background-color: #ddd;
+}
