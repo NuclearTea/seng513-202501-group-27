@@ -30,8 +30,10 @@ export const createFileSlice: StateCreator<FileSlice> = (set) => ({
     set((state) => {
       const files = state.files;
       if (!files || files.length === 0) return state;
+
       const fileIndex = files.findIndex((f) => f.id === id);
-      if (fileIndex === -1) return state; // Fix the condition
+      if (fileIndex === -1) return state;
+
       const newFile = { ...files[fileIndex], content };
       const newFiles = files.map((obj, i) => (i === fileIndex ? newFile : obj));
       return { ...state, files: newFiles };
