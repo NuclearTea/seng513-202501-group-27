@@ -48,7 +48,6 @@ const FileList = () => {
         onCancel={handleCloseModal}
         onClose={handleCloseModal}
         destroyOnClose
-        className="modal"
         onOk={handleNewFileSubmit}
       >
         <div className="modal-content">

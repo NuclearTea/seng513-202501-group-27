@@ -13,10 +13,10 @@ export type FileSlice = {
 
 export const createFileSlice: StateCreator<FileSlice> = (set) => ({
   files: [
-    { id: 1, name: "index.js", content: "" },
-    { id: 2, name: "App.js", content: "" },
-    { id: 3, name: "styles.css", content: "" },
-    { id: 4, name: "README.md", content: "" },
+    { id: "1", name: "index.js", content: "" },
+    { id: "2", name: "App.js", content: "" },
+    { id: "3", name: "styles.css", content: "" },
+    { id: "4", name: "README.md", content: "" },
   ],
   selectedFile: null as File | null,
   content: "",
