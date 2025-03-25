@@ -1,5 +1,5 @@
 export type File = {
   content: string;
-  id: number;
+  id: string;
   name: string;
 };

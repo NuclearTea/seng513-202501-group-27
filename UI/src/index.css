@@ -11,47 +11,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  --smokey-black: rgba(20, 17, 15, 1);
+  --jet: rgba(52, 49, 45, 1);
+  --gray: rgba(126, 127, 131, 1);
+  --dun: rgba(217, 197, 178, 1);
+  --anti-flash-white: rgba(243, 243, 244, 1);
 }
 
 @media (prefers-color-scheme: light) {
@@ -65,4 +30,84 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Base font size (default, typically 16px) */
+html {
+  font-size: 100%; /* 16px default */
+}
+
+/* Body text */
+body {
+  font-size: 1rem; /* 16px */
+  line-height: 1.5; /* For readability */
+}
+
+/* Headings */
+h1 {
+  font-size: 2.25rem; /* 36px */
+}
+
+h2 {
+  font-size: 1.875rem; /* 30px */
+}
+
+h3 {
+  font-size: 1.5rem; /* 24px */
+}
+
+h4 {
+  font-size: 1.25rem; /* 20px */
+}
+
+h5 {
+  font-size: 1.125rem; /* 18px */
+}
+
+h6 {
+  font-size: 1rem; /* 16px */
+}
+
+/* Links */
+a {
+  font-size: 1rem; /* 16px */
+  text-decoration: none; /* Default styling */
+}
+
+/* Blockquotes */
+blockquote {
+  font-size: 1.125rem; /* 18px */
+  font-style: italic;
+}
+
+/* Lists */
+ul,
+ol {
+  font-size: 1rem; /* 16px */
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+  font-size: 1rem; /* 16px */
+  padding: 0.5rem; /* Adds spacing */
+}
+
+/* Small text */
+small {
+  font-size: 0.875rem; /* 14px */
+}
+
+/* Buttons */
+button {
+  font-size: 1rem; /* 16px */
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* Image or Table Captions */
+figcaption,
+table caption {
+  font-size: 0.875rem; /* 14px */
 }

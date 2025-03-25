@@ -2,14 +2,30 @@ import "./fileList.css";
 import { Button, Modal } from "antd";
 import appStore from "../../state/app.store.ts";
 import { useState } from "react";
+import { File } from "../../types.tsx";
+import { v4 } from "uuid";
 
 const FileList = () => {
   const files = appStore().files;
   const setSelectedFile = appStore().setSelectedFile;
-  // const addFile = appStore().addFile;
+  const addFile = appStore().addFile;
   const [showModal, setShowModal] = useState<boolean>(false);
   const handleNewFileButton = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  const [newFileInput, setNewFileInput] = useState("");
+  const handleNewFileNameInput: React.ChangeEventHandler<HTMLInputElement> = (
+    e,
+  ) => {
+    setNewFileInput(e.target.value);
+  };
+  const handleNewFileSubmit = () => {
+    const newFile: File = {
+      content: "",
+      id: v4(),
+      name: newFileInput,
+    };
+    addFile(newFile);
+  };
   if (files.length === 0) {
     return <div>No Files, Add One!</div>;
   }
@@ -32,8 +48,20 @@ const FileList = () => {
         onCancel={handleCloseModal}
         onClose={handleCloseModal}
         destroyOnClose
+        className="modal"
+        onOk={handleNewFileSubmit}
       >
-        <h1>New File Name</h1>
+        <div className="modal-content">
+          <h2>New File Name</h2>
+          <input
+            type="text"
+            placeholder="Please Enter New File Name"
+            required
+            name="new-file-name"
+            id="new-file-name"
+            onChange={handleNewFileNameInput}
+          />
+        </div>
       </Modal>
     </div>
   );
