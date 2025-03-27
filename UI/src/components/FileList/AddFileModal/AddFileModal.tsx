@@ -71,6 +71,7 @@ const AddFileModal: (val: AddFileModalProps) => React.ReactNode = ({
       content: "",
       id: v4(),
       name: newFileInput,
+      path: "/",
     };
     addFile(newFile);
   };

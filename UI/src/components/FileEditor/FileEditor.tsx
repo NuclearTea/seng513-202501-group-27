@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react"; // Monaco Editor package
+import { useEffect, useState } from "react";
 import appStore from "../../state/app.store"; // Your app store
 
-import "./fileEditor.css";
 import { File } from "../../types";
+import "./fileEditor.css";
 
 const determineLanguage = (f: File): string => {
   const fileNameSplit = f.name.split(".");
@@ -24,6 +24,10 @@ const determineLanguage = (f: File): string => {
       return "cpp";
     case "c++":
       return "cpp";
+    case "csharp":
+      return "c#";
+    case "c#":
+      return "c#";
     case "css":
       return "css";
     case "html":
@@ -64,11 +68,12 @@ const FileEditor = () => {
   console.log(selectedFile.content);
   return (
     <div className="file-editor-container">
-      <h2>Editing {selectedFile.name}</h2>
+      {/* <div style={{ marginBottom: "10px", backgroundColor: "black" }} /> */}
       <MonacoEditor
+        className="monaco-editor"
         path={selectedFile.name}
-        height="80%"
-        width="85%"
+        // height="80%"
+        // width="85%"
         defaultLanguage={determineLanguage(selectedFile)}
         defaultValue={content}
         onChange={handleEditorChange}

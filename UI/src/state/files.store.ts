@@ -9,14 +9,15 @@ export type FileSlice = {
   updateFileContent: (id: File["id"], content: string) => void;
   setFiles: (files: File[]) => void;
   addFile: (file: File) => void;
+  getFileByPath: (filePath: string) => File | null;
 };
 
-export const createFileSlice: StateCreator<FileSlice> = (set) => ({
+export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   files: [
-    { id: "1", name: "index.js", content: "" },
-    { id: "2", name: "App.js", content: "" },
-    { id: "3", name: "styles.css", content: "" },
-    { id: "4", name: "README.md", content: "" },
+    { id: "1", name: "index.js", content: "", path: ["src", "index.js"] },
+    { id: "2", name: "App.js", content: "", path: ["src", "App.js"] },
+    { id: "3", name: "styles.css", content: "", path: ["src", "styles.css"] },
+    { id: "4", name: "README.md", content: "", path: ["README.md"] },
   ],
   selectedFile: null as File | null,
   content: "",
@@ -43,4 +44,13 @@ export const createFileSlice: StateCreator<FileSlice> = (set) => ({
     set((state) => ({
       files: [...state.files, file],
     })),
+
+  getFileByPath: (filePath: string) => {
+    const { files } = get();
+    const filePathLowerCase = filePath.toLowerCase();
+    const file = files.find(
+      (f) => f.path.join("/").toLowerCase() === filePathLowerCase,
+    );
+    return file ?? null;
+  },
 });
