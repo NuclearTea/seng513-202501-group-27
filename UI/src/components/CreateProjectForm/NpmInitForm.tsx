@@ -3,9 +3,20 @@ import "./NpmInitForm.css";
 import appStore from "../../state/app.store";
 import { message } from "antd";
 
+export type NodeJSInitFormData = {
+  name: string;
+  version: string;
+  description: string;
+  entryPoint: string;
+  testCommand: string;
+  gitRepository: string;
+  keywords: string;
+  author: string;
+  license: string;
+};
 const NpmInitForm: () => React.ReactNode = () => {
   const { generateInitialFiles } = appStore();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NodeJSInitFormData>({
     name: "npmtest",
     version: "1.0.0",
     description: "I'm testing the default files created when using npm init",
@@ -29,7 +40,7 @@ const NpmInitForm: () => React.ReactNode = () => {
     e.preventDefault();
     // Here we would send the form data to create the package.json
     console.log("Form Data submitted:", formData);
-    const newFiles = generateInitialFiles("Node.JS");
+    const newFiles = generateInitialFiles("Node.JS", formData);
     if (newFiles.length === 0) {
       message.error("Error generating file, please try again");
     } else {

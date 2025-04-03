@@ -23,7 +23,7 @@ const CodeEditor = () => {
 
   const menuItems = buildMenuItemsFromFiles(files);
 
-  const handleMenuItemClick = (e) => {
+  const handleMenuItemClick: MenuClickEventHandler = (e) => {
     if (!e) return;
     const filePath = String(e.key).toLowerCase();
     console.log(filePath);

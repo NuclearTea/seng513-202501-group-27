@@ -1,6 +1,8 @@
 import { StateCreator } from "zustand";
 import { File } from "../types";
 import { ValidBackends } from "../components/CreateProjectForm/CreateProjectForm";
+import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
+import NodeJSInitFileStructure from "../utility/NodeJS.init";
 
 export type FileSlice = {
   files: File[];
@@ -11,7 +13,11 @@ export type FileSlice = {
   setFiles: (files: File[]) => void;
   addFile: (file: File) => void;
   getFileByPath: (filePath: string) => File | null;
-  generateInitialFiles: (selectedBackend: ValidBackends) => File[];
+  // TODO: update form data type to reflect all types of backends
+  generateInitialFiles: (
+    selectedBackend: ValidBackends,
+    formData: NodeJSInitFormData,
+  ) => File[];
 };
 
 export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
@@ -54,26 +60,11 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
     );
     return file ?? null;
   },
-  generateInitialFiles: (selectedBackend: ValidBackends) => {
+  generateInitialFiles: (selectedBackend: ValidBackends, formData) => {
     let newFiles: File[] = [];
     switch (selectedBackend) {
       case "Node.JS":
-        newFiles = [
-          {
-            id: "1",
-            name: "index.js",
-            content: "console.log('Hello World')",
-            path: ["src"],
-          },
-          { id: "2", name: "App.js", content: "", path: ["src"] },
-          {
-            id: "3",
-            name: "styles.css",
-            content: "",
-            path: ["src"],
-          },
-          { id: "4", name: "README.md", content: "", path: [] },
-        ];
+        newFiles = NodeJSInitFileStructure(formData);
     }
     set(() => ({
       files: newFiles,

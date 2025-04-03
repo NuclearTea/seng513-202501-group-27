@@ -36,6 +36,8 @@ const determineLanguage = (f: File): string => {
       return "markdown";
     case "MD":
       return "markdown";
+    case "json":
+      return "json";
     default:
       return "markdown";
   }
@@ -66,16 +68,15 @@ const FileEditor = () => {
     }
   };
   console.log(selectedFile.content);
+  // React 19 doesn't require useMemo, but would've been used here
+  const language = determineLanguage(selectedFile);
   return (
     <div className="file-editor-container">
-      {/* <div style={{ marginBottom: "10px", backgroundColor: "black" }} /> */}
       <MonacoEditor
         className="monaco-editor"
         path={selectedFile.name}
-        // height="80%"
-        // width="85%"
-        defaultLanguage={determineLanguage(selectedFile)}
-        defaultValue={content}
+        defaultLanguage={language}
+        value={content}
         onChange={handleEditorChange}
         theme="vs-dark"
       />

@@ -2,8 +2,20 @@ import { useState } from "react";
 import NpmInitForm from "./NpmInitForm";
 import PythonInitForm from "./PythonInitForm";
 import "./CreateProjectForm.css";
+import { message } from "antd";
 
 export type ValidBackends = "Node.JS" | "Python" | "Ruby" | "Java (Spring)";
+export function isValidBackend(str: string): str is ValidBackends {
+  switch (str) {
+    case "Node.JS":
+    case "Python":
+    case "Ruby":
+    case "Java (Spring)":
+      return true;
+    default:
+      return false;
+  }
+}
 const CreateProjectForm = () => {
   const [selectedBackend, setSelectedBackend] =
     useState<ValidBackends>("Node.JS");
@@ -11,7 +23,12 @@ const CreateProjectForm = () => {
   const handleSelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSelectedBackend(event.target.value);
+    const val = event.target.value;
+    if (isValidBackend(val)) {
+      setSelectedBackend(val);
+      return;
+    }
+    message.error("Something went wrong creating project, try again please");
   };
 
   const renderForm = () => {
