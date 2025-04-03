@@ -1,46 +1,41 @@
 import {
+  DownloadOutlined,
   PlaySquareOutlined,
   UploadOutlined,
-  DownloadOutlined,
-  FileOutlined,
-  FolderOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Button, MenuProps, message, theme } from "antd";
-import { Header, Content } from "antd/es/layout/layout";
+import { Button, Layout, Menu, MenuProps, message } from "antd";
+import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
+import { useState } from "react";
+import { buildMenuItemsFromFiles } from "../../LayoutFunction";
+import appStore from "../../state/app.store";
 import FileEditor from "../FileEditor/FileEditor";
 import AddFileModal from "../FileList/AddFileModal/AddFileModal";
-import { useState } from "react";
-import { MenuItem, getItem } from "../../LayoutFunction";
-import appStore from "../../state/app.store";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-  const { getFileByPath, setSelectedFile, selectedFile } = appStore();
+  // const {
+  //   token: { colorBgContainer, borderRadiusLG },
+  // } = theme.useToken();
+  const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
 
-  // const menuItems = buildMenuItems(files);
-  const menuItems: MenuItem[] = [
-    getItem("src", "src", <FolderOutlined />, [
-      getItem("index.js", "src/index.js", <FileOutlined />),
-      getItem("App.js", "src/App.js", <FileOutlined />),
-      getItem("styles.css", "src/styles.css", <FileOutlined />),
-    ]),
-    getItem("README.md", "README.md", <FileOutlined />),
-  ];
+  const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick = (e) => {
     if (!e) return;
-    const file = getFileByPath(String(e.key));
-    if (!file) return;
+    const filePath = String(e.key).toLowerCase();
+    console.log(filePath);
+    const file = getFileByPath(filePath);
+    if (!file) {
+      messageApi.error(`Something went wrong accessing: ${e.key}`);
+      return;
+    }
     setSelectedFile(file);
   };
 
-  const handleNewFileButton = (e) => {
+  const handleNewFileButton = () => {
     setShowModal(true);
   };
 
