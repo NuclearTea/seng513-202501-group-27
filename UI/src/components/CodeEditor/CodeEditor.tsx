@@ -16,14 +16,11 @@ const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  // const {
-  //   token: { colorBgContainer, borderRadiusLG },
-  // } = theme.useToken();
   const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
 
   const menuItems = buildMenuItemsFromFiles(files);
 
-  const handleMenuItemClick: MenuClickEventHandler = (e) => {
+  const handleMenuItemClick: MenuProps["onClick"] = (e) => {
     if (!e) return;
     const filePath = String(e.key).toLowerCase();
     console.log(filePath);

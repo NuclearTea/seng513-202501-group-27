@@ -5,18 +5,15 @@ import appStore from "../../../state/app.store";
 import { File } from "../../../types";
 
 const validateFileName = (fileName: string): boolean => {
-  // Check if the file name is empty
   if (!fileName.trim()) {
     return false;
   }
 
-  // Check if the file name contains invalid characters
-  const invalidChars = /[<>:"/\\|?*\x00-\x1F]/; // Invalid characters in file names (e.g., <, >, :, etc.)
+  const invalidChars = /[<>:"\\|?*\p{C}]/u;
   if (invalidChars.test(fileName)) {
     return false;
   }
 
-  // Check if the file name is not one of the reserved system names (Windows-specific)
   const reservedNames = [
     "CON",
     "PRN",
@@ -67,11 +64,15 @@ const AddFileModal: (val: AddFileModalProps) => React.ReactNode = ({
       alert("Invalid file name, please try again");
       return;
     }
+    const nameSplit = newFileInput.split("/");
+
+    const path = nameSplit.length === 0 ? [] : nameSplit.slice(0, -1);
+    const name = nameSplit.length === 0 ? newFileInput : nameSplit.slice(-1)[0];
     const newFile: File = {
       content: "",
       id: v4(),
-      name: newFileInput,
-      path: "/",
+      name,
+      path,
     };
     addFile(newFile);
   };
