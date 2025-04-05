@@ -10,7 +10,7 @@ import { useState } from "react";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import FileEditor from "../FileEditor/FileEditor";
-import AddFileModal from "../FileList/AddFileModal/AddFileModal";
+import AddFileModal from "../AddFileModal/AddFileModal";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);

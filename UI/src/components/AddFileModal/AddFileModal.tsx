@@ -1,8 +1,8 @@
 import { Modal } from "antd";
 import React, { useState } from "react";
 import { v4 } from "uuid";
-import appStore from "../../../state/app.store";
-import { File } from "../../../types";
+import appStore from "../../state/app.store.ts";
+import { File } from "../../types";
 
 const validateFileName = (fileName: string): boolean => {
   if (!fileName.trim()) {
