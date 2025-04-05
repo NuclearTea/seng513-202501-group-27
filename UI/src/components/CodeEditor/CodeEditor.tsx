@@ -1,5 +1,6 @@
 import {
   DownloadOutlined,
+  FileAddOutlined,
   PlaySquareOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
@@ -99,9 +100,8 @@ const CodeEditor = () => {
               backgroundColor: "var(--anti-flash-white)",
             }}
             onClick={handleNewFileButton}
-          >
-            <h3>New File</h3>
-          </Button>
+            icon={<FileAddOutlined />}
+          />
           <Menu
             theme="dark"
             defaultSelectedKeys={["1"]}
