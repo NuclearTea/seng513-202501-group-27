@@ -1,0 +1,113 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --smokey-black: rgba(20, 17, 15, 1);
+  --jet: rgba(52, 49, 45, 1);
+  --gray: rgba(126, 127, 131, 1);
+  --dun: rgba(217, 197, 178, 1);
+  --anti-flash-white: rgba(243, 243, 244, 1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* Base font size (default, typically 16px) */
+html {
+  font-size: 100%; /* 16px default */
+}
+
+/* Body text */
+body {
+  font-size: 1rem; /* 16px */
+  line-height: 1.5; /* For readability */
+}
+
+/* Headings */
+h1 {
+  font-size: 2.25rem; /* 36px */
+}
+
+h2 {
+  font-size: 1.875rem; /* 30px */
+}
+
+h3 {
+  font-size: 1.5rem; /* 24px */
+}
+
+h4 {
+  font-size: 1.25rem; /* 20px */
+}
+
+h5 {
+  font-size: 1.125rem; /* 18px */
+}
+
+h6 {
+  font-size: 1rem; /* 16px */
+}
+
+/* Links */
+a {
+  font-size: 1rem; /* 16px */
+  text-decoration: none; /* Default styling */
+}
+
+/* Blockquotes */
+blockquote {
+  font-size: 1.125rem; /* 18px */
+  font-style: italic;
+}
+
+/* Lists */
+ul,
+ol {
+  font-size: 1rem; /* 16px */
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+  font-size: 1rem; /* 16px */
+  padding: 0.5rem; /* Adds spacing */
+}
+
+/* Small text */
+small {
+  font-size: 0.875rem; /* 14px */
+}
+
+/* Buttons */
+button {
+  font-size: 1rem; /* 16px */
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+/* Image or Table Captions */
+figcaption,
+table caption {
+  font-size: 0.875rem; /* 14px */
+}
