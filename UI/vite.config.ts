@@ -5,4 +5,12 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   base: "/UI/",
+  resolve: {
+    alias: {
+      // No alias needed anymore
+    },
+  },
+  server: {
+    // No fs.allow needed since all imports are inside /UI
+  },
 });

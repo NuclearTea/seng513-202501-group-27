@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "50051:50051"
+    networks:
+      - grpc-net
+
+  envoy:
+    image: envoyproxy/envoy:dev-8283565cffc7b713ef1b3a8b79c285c269e15db3
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "8080:8080"   # gRPC-Web (frontend will connect to this)
+      - "9901:9901"   # Envoy admin (optional)
+    depends_on:
+      - server
+    networks:
+      - grpc-net
+
+  frontend:
+    build:
+      context: ./UI
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - envoy
+    networks:
+      - grpc-net
+
+networks:
+  grpc-net:
+
