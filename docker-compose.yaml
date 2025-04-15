@@ -1,38 +1,22 @@
-version: "3.8"
-
 services:
-  server:
+  grpc-server:
     build:
       context: .
       dockerfile: Dockerfile.server
+    container_name: grpc-server
     ports:
-      - "50051:50051"
-    networks:
-      - grpc-net
+      - "8080:8080"
 
+  # Optional: Envoy for gRPC-Web proxying
   envoy:
-    image: envoyproxy/envoy:dev-8283565cffc7b713ef1b3a8b79c285c269e15db3
+    image: envoyproxy/envoy-dev:latest # includes all filters
+    container_name: envoy
     volumes:
-      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - type: bind
+        source: ./docker/envoy.yaml
+        target: /etc/envoy/envoy.yaml
     ports:
-      - "8080:8080"   # gRPC-Web (frontend will connect to this)
-      - "9901:9901"   # Envoy admin (optional)
+      - "8081:8081"
+      - "9901:9901" # admin
     depends_on:
-      - server
-    networks:
-      - grpc-net
-
-  frontend:
-    build:
-      context: ./UI
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - envoy
-    networks:
-      - grpc-net
-
-networks:
-  grpc-net:
-
+      - grpc-server
