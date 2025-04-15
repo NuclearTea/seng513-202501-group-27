@@ -1,6 +1,8 @@
-module seng513-202501-group-27/gRPC-web-IDE
+module seng513-202501-group-27
 
 go 1.24.0
+
+replace seng513-202501-group-27 => ./
 
 require (
 	golang.org/x/net v0.34.0 // indirect

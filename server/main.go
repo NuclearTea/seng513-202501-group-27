@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	"seng513-202501-group-27/gRPC-web-IDE/gen/go/greeter"
+	"seng513-202501-group-27/gen/go"
 )
 
 type greeterServer struct {
