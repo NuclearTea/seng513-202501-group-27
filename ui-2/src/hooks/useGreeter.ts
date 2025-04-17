@@ -1,14 +1,9 @@
 import { useCallback, useState } from "react";
-import { RpcError } from "grpc-web";
-const Greeter = require("../proto/greeter_grpc_web_pb.js");
-const greeter = require("../proto/greeter_pb.js");
-
-// Use the Promise-based client
-const client = new Greeter.GreeterPromiseClient(
-  "http://localhost:8081",
-  null,
-  null,
-);
+import { HelloRequest, HelloReply } from "../proto/greeter_pb";
+import { GreeterClient } from "../proto/GreeterServiceClientPb";
+const client = new GreeterClient("http://localhost:8081", null, {
+  format: "text",
+});
 
 export const useGreeter = () => {
   const [reply, setReply] = useState<string | null>(null);
@@ -16,7 +11,7 @@ export const useGreeter = () => {
   const [error, setError] = useState<string | null>(null);
 
   const sayHello = useCallback((name: string) => {
-    const request = new greeter.HelloRequest();
+    const request = new HelloRequest();
     request.setName(name);
 
     setLoading(true);
@@ -25,21 +20,14 @@ export const useGreeter = () => {
 
     client
       .sayHello(request)
-      .then((res: any) => {
+      .then((res: HelloReply) => {
         setReply(res.getMessage());
       })
-      .catch((err: RpcError) => {
+      .catch((err) => {
         setError(err.message);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
 
-  return {
-    reply,
-    loading,
-    error,
-    sayHello,
-  };
+  return { reply, loading, error, sayHello };
 };

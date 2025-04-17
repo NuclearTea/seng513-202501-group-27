@@ -42,15 +42,13 @@ web:
 
 web2:
 	@echo "web2!"
-	# ui-2 should have proto folder
-	# protoc -I=$(PROTO_DIR) \
-	# 	--js_out=import_style=commonjs:$(WEB_OUT) \
-	# 	--grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(WEB_OUT) \
-	# 	$(PROTO_SRC)
-	protoc  -I=proto \
+	@mkdir -p ui-2/src/proto
+	protoc \
+		--proto_path=proto \
 		--js_out=import_style=commonjs:ui-2/src/proto \
-		--grpc-web_out=import_style=commonjs,mode=grpcwebtext:ui-2/src/proto \
-		$(PROTO_FILES)
+		--grpc-web_out=import_style=typescript,mode=grpcwebtext:ui-2/src/proto \
+		proto/greeter.proto
+
 
 
 run-backend:
