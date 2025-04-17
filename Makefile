@@ -17,12 +17,12 @@ PROTOC_GEN_TS_PROTO := UI/node_modules/.bin/protoc-gen-ts_proto
 PROTO_FILES     := $(wildcard $(PROTO_DIR)/*.proto)
 
 # ===== Targets =====
-.PHONY: all proto-go proto-web run-backend run-frontend run-envoy clean
+.PHONY: all server web web2 run-backend run-frontend run-envoy clean
 
-all: proto-go proto-web
+all: server web
 
-proto-go:
-	@echo "🛠️  Generating Go gRPC files..."
+server:
+	"🛠️  Generating Go gRPC files..."
 	@mkdir -p $(GO_OUT_DIR)
 	$(PROTOC) \
 		--proto_path=$(PROTO_DIR) \
@@ -30,7 +30,7 @@ proto-go:
 		--go-grpc_out=$(GO_OUT_DIR) \
 		$(PROTO_FILES)
 
-proto-web:
+web:
 	@echo "🌐 Generating Web (ts-proto) gRPC files..."
 	@mkdir -p $(TS_OUT_DIR)
 	$(PROTOC) \
@@ -39,6 +39,19 @@ proto-web:
 		--ts_proto_opt=outputEncodeMethods=false,outputJsonMethods,outputClientImpl=true \
 		--proto_path=$(PROTO_DIR) \
 		$(PROTO_FILES)
+
+web2:
+	@echo "web2!"
+	# ui-2 should have proto folder
+	# protoc -I=$(PROTO_DIR) \
+	# 	--js_out=import_style=commonjs:$(WEB_OUT) \
+	# 	--grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(WEB_OUT) \
+	# 	$(PROTO_SRC)
+	protoc  -I=proto \
+		--js_out=import_style=commonjs:ui-2/src/proto \
+		--grpc-web_out=import_style=commonjs,mode=grpcwebtext:ui-2/src/proto \
+		$(PROTO_FILES)
+
 
 run-backend:
 	@echo "🚀 Running Go gRPC backend..."
