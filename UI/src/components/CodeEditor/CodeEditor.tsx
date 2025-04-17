@@ -12,14 +12,14 @@ import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import FileEditor from "../FileEditor/FileEditor";
 import AddFileModal from "../AddFileModal/AddFileModal";
-import { useSayHello } from "../../hooks/useSayHello";
+import { useGreeter } from "../../hooks/useGreeter";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
-  const { error, loading, response, sayHello } = useSayHello();
+  const { sayHello } = useGreeter();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
