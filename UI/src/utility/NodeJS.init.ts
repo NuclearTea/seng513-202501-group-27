@@ -1,5 +1,5 @@
 import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
-import { File } from "../types.tsx";
+import { File } from "../types";
 const NodeJSInitFileStructure = (formData: NodeJSInitFormData): File[] => {
   return [
     {
