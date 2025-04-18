@@ -120,7 +120,8 @@ const file_greeter_proto_rawDesc = "" +
 	"HelloReply\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage2A\n" +
 	"\aGreeter\x126\n" +
-	"\bSayHello\x12\x15.greeter.HelloRequest\x1a\x13.greeter.HelloReplyB0Z.seng513-202501-group-27/gen/go/greeter;greeterb\x06proto3"
+	"\bSayHello\x12\x15.greeter.HelloRequest\x1a\x13.greeter.HelloReplyB\fZ\n" +
+	"./;greeterb\x06proto3"
 
 var (
 	file_greeter_proto_rawDescOnce sync.Once

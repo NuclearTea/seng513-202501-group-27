@@ -1,6 +1,7 @@
 # ===== Paths =====
 PROTO_DIR       := proto
-GO_OUT_DIR      := ../
+# GO_OUT_DIR      := ../
+GO_OUT_DIR      := gen
 TS_OUT_DIR      := UI/src/proto
 ENVOY_CONFIG    := envoy.yaml
 
@@ -29,7 +30,12 @@ server:
 		--go_out=$(GO_OUT_DIR) \
 		--go-grpc_out=$(GO_OUT_DIR) \
 		$(PROTO_FILES)
-
+	# $(PROTOC) \
+	# 	--proto_path=$(PROTO_DIR) \
+	# 	--go_out=M$(PROTO_FILES)=$(GO_OUT_DIR):$(GO_OUT_DIR) \
+	# 	--go-grpc_out=M$(PROTO_FILES)=$(GO_OUT_DIR):$(GO_OUT_DIR) \
+	# 	$(PROTO_FILES)
+	#
 web:
 	@echo "🌐 Generating Web (ts-proto) gRPC files..."
 	@mkdir -p $(TS_OUT_DIR)
