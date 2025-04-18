@@ -22,7 +22,7 @@ PROTO_FILES     := $(wildcard $(PROTO_DIR)/*.proto)
 all: server web
 
 server:
-	"🛠️  Generating Go gRPC files..."
+	@echo "🛠️  Generating Go gRPC files..."
 	@mkdir -p $(GO_OUT_DIR)
 	$(PROTOC) \
 		--proto_path=$(PROTO_DIR) \
@@ -33,10 +33,20 @@ server:
 web:
 	@echo "🌐 Generating Web (ts-proto) gRPC files..."
 	@mkdir -p $(TS_OUT_DIR)
+	# $(PROTOC) \
+	# 	--plugin=$(PROTOC_GEN_TS_PROTO) \
+	# 	--ts_proto_out=$(TS_OUT_DIR) \
+	# 	--ts_proto_opt=outputEncodeMethods=false,outputJsonMethods,outputClientImpl=true \
+	# 	--proto_path=$(PROTO_DIR) \
+	# 	$(PROTO_FILES)
+	#
+		# protoc \
+		# --proto_path=$(PROTO_DIR) \
+		# --js_out=import_style=es6,binary:$(TS_OUT_DIR) \
+		# --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(TS_OUT_DIR) \
+		# $(PROTO_FILES)
 	$(PROTOC) \
-		--plugin=$(PROTOC_GEN_TS_PROTO) \
-		--ts_proto_out=$(TS_OUT_DIR) \
-		--ts_proto_opt=outputEncodeMethods=false,outputJsonMethods,outputClientImpl=true \
+		--ts_out=$(TS_OUT_DIR) \
 		--proto_path=$(PROTO_DIR) \
 		$(PROTO_FILES)
 
@@ -66,4 +76,4 @@ run-envoy:
 clean:
 	@echo "🧹 Cleaning generated proto output..."
 	@rm -rf gen/
-	@rm -f UI/src/proto/*.ts
+	@rm -f UI/src/proto/*{.ts,.js}

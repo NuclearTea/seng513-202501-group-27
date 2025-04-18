@@ -1,36 +1,42 @@
-// UI/src/hooks/useGreeter.ts
-import { useState } from "react";
-// import { HelloRequest, HelloReply } from "../../gen/greeter_pb";
-// import { GreeterClient } from "../../gen/GreeterServiceClientPb";
-// import { GreeterClient } from "../proto/GreeterServiceClientPb";
+import { useCallback, useState } from "react";
+// import "../proto/greeter_pb";
+// const { HelloRequest, HelloReply } = proto;
 // import { HelloRequest, HelloReply } from "../proto/greeter_pb";
-import { GreeterClientImpl } from "../proto/greeter";
-import type { RpcError } from "grpc-web";
+// const { HelloRequest, HelloReply } = global.proto.greeter;
 
-const client = GreeterClientImpl("http://localhost:8080");
-
-export function useGreeter() {
-  const [response, setResponse] = useState<HelloReply | null>(null);
+// import { GreeterClient } from "../proto/GreeterServiceClientPb";
+// import { GreeterClientImpl } from "../proto/greeter.ts";
+// const client = new GreeterClient("http://localhost:8081", null, {
+//   format: "text",
+// });
+import { greeter } from "../proto/greeter.ts";
+const { GreeterClient, HelloReply, HelloRequest } = greeter;
+const client = new GreeterClient("http://localhost:8081", null, {
+  format: "text",
+});
+export const useGreeter = () => {
+  const [reply, setReply] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<RpcError | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const sayHello = async (name: string) => {
-    setLoading(true);
-    setError(null);
-    // const request: HelloRequest = {
-    //   $typeName: "greeter.HelloRequest",
-    //   name,
-    // };
+  const sayHello = useCallback((name: string) => {
+    const request = new HelloRequest();
     request.setName(name);
-    try {
-      const reply = await client.sayHello(request, {});
-      setResponse(reply);
-    } catch (err) {
-      setError(err as RpcError);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  return { sayHello, response, loading, error };
-}
+    setLoading(true);
+    setReply(null);
+    setError(null);
+
+    client
+      .sayHello(request)
+      .then((res: HelloReply) => {
+        setReply(res.getMessage());
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { reply, loading, error, sayHello };
+};

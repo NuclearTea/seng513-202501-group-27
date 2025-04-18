@@ -17,4 +17,7 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    include: ["google-protobuf", "grpc-web"],
+  },
 });
