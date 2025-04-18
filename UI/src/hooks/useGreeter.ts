@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { HelloRequest, HelloReply } from "../proto/greeter_pb";
-import { GreeterClient } from "../proto/GreeterServiceClientPb";
+import { HelloRequest, HelloReply } from "../proto/greeter/greeter_pb";
+import { GreeterClient } from "../proto/greeter/GreeterServiceClientPb";
 const client = new GreeterClient("http://localhost:8081", null, {
   format: "text",
 });

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package filetree;
+
+option go_package = "./filetree;filetree";
+
+service FileService { rpc Upload(UploadRequest) returns (UploadResponse); }
+
+message File {
+  string content = 1;
+  string id = 2;
+  string name = 3;
+  repeated string path = 4;
+}
+
+message Directory {
+  string name = 1;
+  repeated string path = 2;
+  repeated File file_children = 3;
+  repeated Directory dir_children = 4;
+}
+
+message UploadRequest { Directory root = 1; }
+
+message UploadResponse { string status = 1; }

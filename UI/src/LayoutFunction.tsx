@@ -1,6 +1,5 @@
 import { FileOutlined, FolderOutlined } from "@ant-design/icons";
 import { File } from "./types";
-// import { FolderOutlined, FileOutlined } from "@ant-design/icons";
 import { MenuProps } from "antd";
 import MenuItem from "antd/es/menu/MenuItem";
 import hasKey from "./utility/hasKey";
