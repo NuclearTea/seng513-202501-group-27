@@ -43,10 +43,15 @@ export class Directory extends jspb.Message {
   clearPathList(): Directory;
   addPath(value: string, index?: number): Directory;
 
-  getChildrenList(): Array<Child>;
-  setChildrenList(value: Array<Child>): Directory;
-  clearChildrenList(): Directory;
-  addChildren(value?: Child, index?: number): Child;
+  getFileChildrenList(): Array<File>;
+  setFileChildrenList(value: Array<File>): Directory;
+  clearFileChildrenList(): Directory;
+  addFileChildren(value?: File, index?: number): File;
+
+  getDirChildrenList(): Array<Directory>;
+  setDirChildrenList(value: Array<Directory>): Directory;
+  clearDirChildrenList(): Directory;
+  addDirChildren(value?: Directory, index?: number): Directory;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Directory.AsObject;
@@ -60,41 +65,8 @@ export namespace Directory {
   export type AsObject = {
     name: string,
     pathList: Array<string>,
-    childrenList: Array<Child.AsObject>,
-  }
-}
-
-export class Child extends jspb.Message {
-  getFile(): File | undefined;
-  setFile(value?: File): Child;
-  hasFile(): boolean;
-  clearFile(): Child;
-
-  getDirectory(): Directory | undefined;
-  setDirectory(value?: Directory): Child;
-  hasDirectory(): boolean;
-  clearDirectory(): Child;
-
-  getNodeCase(): Child.NodeCase;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Child.AsObject;
-  static toObject(includeInstance: boolean, msg: Child): Child.AsObject;
-  static serializeBinaryToWriter(message: Child, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Child;
-  static deserializeBinaryFromReader(message: Child, reader: jspb.BinaryReader): Child;
-}
-
-export namespace Child {
-  export type AsObject = {
-    file?: File.AsObject,
-    directory?: Directory.AsObject,
-  }
-
-  export enum NodeCase { 
-    NODE_NOT_SET = 0,
-    FILE = 1,
-    DIRECTORY = 2,
+    fileChildrenList: Array<File.AsObject>,
+    dirChildrenList: Array<Directory.AsObject>,
   }
 }
 

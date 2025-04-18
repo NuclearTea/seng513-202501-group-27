@@ -16,8 +16,14 @@ message File {
 message Directory {
   string name = 1;
   repeated string path = 2;
-  repeated File file_children = 3;
-  repeated Directory dir_children = 4;
+  repeated Child children = 3;
+}
+
+message Child {
+  oneof node {
+    File file = 1;
+    Directory directory = 2;
+  }
 }
 
 message UploadRequest { Directory root = 1; }

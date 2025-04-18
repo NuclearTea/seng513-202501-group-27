@@ -13,6 +13,7 @@ import appStore from "../../state/app.store";
 import FileEditor from "../FileEditor/FileEditor";
 import AddFileModal from "../AddFileModal/AddFileModal";
 import { useGreeter } from "../../hooks/useGreeter";
+import { useFileUpload } from "../../hooks/useFileService";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,6 +21,7 @@ const CodeEditor = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
   const { sayHello, reply, error, loading } = useGreeter();
+  const { upload, status, loading, error } = useFileUpload();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {

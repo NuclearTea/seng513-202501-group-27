@@ -93,7 +93,8 @@ type Directory struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Path          []string               `protobuf:"bytes,2,rep,name=path,proto3" json:"path,omitempty"`
-	Children      []*Child               `protobuf:"bytes,3,rep,name=children,proto3" json:"children,omitempty"`
+	FileChildren  []*File                `protobuf:"bytes,3,rep,name=file_children,json=fileChildren,proto3" json:"file_children,omitempty"`
+	DirChildren   []*Directory           `protobuf:"bytes,4,rep,name=dir_children,json=dirChildren,proto3" json:"dir_children,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -142,94 +143,19 @@ func (x *Directory) GetPath() []string {
 	return nil
 }
 
-func (x *Directory) GetChildren() []*Child {
+func (x *Directory) GetFileChildren() []*File {
 	if x != nil {
-		return x.Children
+		return x.FileChildren
 	}
 	return nil
 }
 
-type Child struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Types that are valid to be assigned to Node:
-	//
-	//	*Child_File
-	//	*Child_Directory
-	Node          isChild_Node `protobuf_oneof:"node"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Child) Reset() {
-	*x = Child{}
-	mi := &file_filetree_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Child) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Child) ProtoMessage() {}
-
-func (x *Child) ProtoReflect() protoreflect.Message {
-	mi := &file_filetree_proto_msgTypes[2]
+func (x *Directory) GetDirChildren() []*Directory {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Child.ProtoReflect.Descriptor instead.
-func (*Child) Descriptor() ([]byte, []int) {
-	return file_filetree_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *Child) GetNode() isChild_Node {
-	if x != nil {
-		return x.Node
+		return x.DirChildren
 	}
 	return nil
 }
-
-func (x *Child) GetFile() *File {
-	if x != nil {
-		if x, ok := x.Node.(*Child_File); ok {
-			return x.File
-		}
-	}
-	return nil
-}
-
-func (x *Child) GetDirectory() *Directory {
-	if x != nil {
-		if x, ok := x.Node.(*Child_Directory); ok {
-			return x.Directory
-		}
-	}
-	return nil
-}
-
-type isChild_Node interface {
-	isChild_Node()
-}
-
-type Child_File struct {
-	File *File `protobuf:"bytes,1,opt,name=file,proto3,oneof"`
-}
-
-type Child_Directory struct {
-	Directory *Directory `protobuf:"bytes,2,opt,name=directory,proto3,oneof"`
-}
-
-func (*Child_File) isChild_Node() {}
-
-func (*Child_Directory) isChild_Node() {}
 
 type UploadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -240,7 +166,7 @@ type UploadRequest struct {
 
 func (x *UploadRequest) Reset() {
 	*x = UploadRequest{}
-	mi := &file_filetree_proto_msgTypes[3]
+	mi := &file_filetree_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -252,7 +178,7 @@ func (x *UploadRequest) String() string {
 func (*UploadRequest) ProtoMessage() {}
 
 func (x *UploadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_filetree_proto_msgTypes[3]
+	mi := &file_filetree_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -265,7 +191,7 @@ func (x *UploadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadRequest.ProtoReflect.Descriptor instead.
 func (*UploadRequest) Descriptor() ([]byte, []int) {
-	return file_filetree_proto_rawDescGZIP(), []int{3}
+	return file_filetree_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UploadRequest) GetRoot() *Directory {
@@ -284,7 +210,7 @@ type UploadResponse struct {
 
 func (x *UploadResponse) Reset() {
 	*x = UploadResponse{}
-	mi := &file_filetree_proto_msgTypes[4]
+	mi := &file_filetree_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -296,7 +222,7 @@ func (x *UploadResponse) String() string {
 func (*UploadResponse) ProtoMessage() {}
 
 func (x *UploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_filetree_proto_msgTypes[4]
+	mi := &file_filetree_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -309,7 +235,7 @@ func (x *UploadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadResponse.ProtoReflect.Descriptor instead.
 func (*UploadResponse) Descriptor() ([]byte, []int) {
-	return file_filetree_proto_rawDescGZIP(), []int{4}
+	return file_filetree_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UploadResponse) GetStatus() string {
@@ -328,15 +254,12 @@ const file_filetree_proto_rawDesc = "" +
 	"\acontent\x18\x01 \x01(\tR\acontent\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x12\n" +
-	"\x04path\x18\x04 \x03(\tR\x04path\"`\n" +
+	"\x04path\x18\x04 \x03(\tR\x04path\"\xa0\x01\n" +
 	"\tDirectory\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04path\x18\x02 \x03(\tR\x04path\x12+\n" +
-	"\bchildren\x18\x03 \x03(\v2\x0f.filetree.ChildR\bchildren\"j\n" +
-	"\x05Child\x12$\n" +
-	"\x04file\x18\x01 \x01(\v2\x0e.filetree.FileH\x00R\x04file\x123\n" +
-	"\tdirectory\x18\x02 \x01(\v2\x13.filetree.DirectoryH\x00R\tdirectoryB\x06\n" +
-	"\x04node\"8\n" +
+	"\x04path\x18\x02 \x03(\tR\x04path\x123\n" +
+	"\rfile_children\x18\x03 \x03(\v2\x0e.filetree.FileR\ffileChildren\x126\n" +
+	"\fdir_children\x18\x04 \x03(\v2\x13.filetree.DirectoryR\vdirChildren\"8\n" +
 	"\rUploadRequest\x12'\n" +
 	"\x04root\x18\x01 \x01(\v2\x13.filetree.DirectoryR\x04root\"(\n" +
 	"\x0eUploadResponse\x12\x16\n" +
@@ -356,26 +279,24 @@ func file_filetree_proto_rawDescGZIP() []byte {
 	return file_filetree_proto_rawDescData
 }
 
-var file_filetree_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_filetree_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_filetree_proto_goTypes = []any{
 	(*File)(nil),           // 0: filetree.File
 	(*Directory)(nil),      // 1: filetree.Directory
-	(*Child)(nil),          // 2: filetree.Child
-	(*UploadRequest)(nil),  // 3: filetree.UploadRequest
-	(*UploadResponse)(nil), // 4: filetree.UploadResponse
+	(*UploadRequest)(nil),  // 2: filetree.UploadRequest
+	(*UploadResponse)(nil), // 3: filetree.UploadResponse
 }
 var file_filetree_proto_depIdxs = []int32{
-	2, // 0: filetree.Directory.children:type_name -> filetree.Child
-	0, // 1: filetree.Child.file:type_name -> filetree.File
-	1, // 2: filetree.Child.directory:type_name -> filetree.Directory
-	1, // 3: filetree.UploadRequest.root:type_name -> filetree.Directory
-	3, // 4: filetree.FileService.Upload:input_type -> filetree.UploadRequest
-	4, // 5: filetree.FileService.Upload:output_type -> filetree.UploadResponse
-	5, // [5:6] is the sub-list for method output_type
-	4, // [4:5] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0, // 0: filetree.Directory.file_children:type_name -> filetree.File
+	1, // 1: filetree.Directory.dir_children:type_name -> filetree.Directory
+	1, // 2: filetree.UploadRequest.root:type_name -> filetree.Directory
+	2, // 3: filetree.FileService.Upload:input_type -> filetree.UploadRequest
+	3, // 4: filetree.FileService.Upload:output_type -> filetree.UploadResponse
+	4, // [4:5] is the sub-list for method output_type
+	3, // [3:4] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_filetree_proto_init() }
@@ -383,17 +304,13 @@ func file_filetree_proto_init() {
 	if File_filetree_proto != nil {
 		return
 	}
-	file_filetree_proto_msgTypes[2].OneofWrappers = []any{
-		(*Child_File)(nil),
-		(*Child_Directory)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_filetree_proto_rawDesc), len(file_filetree_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
