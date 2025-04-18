@@ -7,18 +7,19 @@ import {
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import FileEditor from "../FileEditor/FileEditor";
 import AddFileModal from "../AddFileModal/AddFileModal";
+import { useGreeter } from "../../hooks/useGreeter";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
-
+  const { sayHello, reply, error, loading } = useGreeter();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -38,10 +39,23 @@ const CodeEditor = () => {
   };
 
   const handleRunButton = () => {
-    messageApi.loading("Uploading Files", 2.5, () =>
-      messageApi.success("Your Api is running at http://someSite1329824.host"),
-    );
+    sayHello("Ali");
   };
+
+  useEffect(() => {
+    if (loading) {
+      messageApi.loading("Uploading Files", 2.5);
+      return;
+    }
+    if (error) {
+      messageApi.error("Something went wrong");
+      return;
+    }
+    if (!loading && !error && reply) {
+      messageApi.destroy();
+      messageApi.success(reply);
+    }
+  }, [error, loading, reply, messageApi]);
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },

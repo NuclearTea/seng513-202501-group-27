@@ -1,0 +1,22 @@
+services:
+  grpc-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: grpc-server
+    ports:
+      - "8080:8080"
+
+  # Optional: Envoy for gRPC-Web proxying
+  envoy:
+    image: envoyproxy/envoy-dev:latest # includes all filters
+    container_name: envoy
+    volumes:
+      - type: bind
+        source: ./docker/envoy.yaml
+        target: /etc/envoy/envoy.yaml
+    ports:
+      - "8081:8081"
+      - "9901:9901" # admin
+    depends_on:
+      - grpc-server

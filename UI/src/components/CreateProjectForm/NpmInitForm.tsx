@@ -20,7 +20,7 @@ const NpmInitForm: () => React.ReactNode = () => {
     name: "npmtest",
     version: "1.0.0",
     description: "I'm testing the default files created when using npm init",
-    entryPoint: "index.js",
+    entryPoint: "src/index.js",
     testCommand: "",
     gitRepository: "",
     keywords: "",
