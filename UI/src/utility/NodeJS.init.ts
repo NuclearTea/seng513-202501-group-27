@@ -5,18 +5,21 @@ const createNodeJSInitFiles = (formData: NodeJSInitFormData): File[] => {
   const indexJs = new File();
   indexJs.setId("1");
   indexJs.setName("index.js");
+
   indexJs.setContent(
     `
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.listen(port, () => {
-  console.log(\`Server is running at http://localhost:\${port}\`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(\`Server is running at http://0.0.0.0:\${port}\`);
 });
   `.trim(),
   );
@@ -49,38 +52,28 @@ node src/index.js
         },
         dependencies: {
           express: "^4.18.2",
+          dotenv: "^16.3.1",
         },
       },
-
       null,
       2,
     ),
-    // JSON.stringify(
-    //   {
-    //     name: formData.name || "hello-world-server",
-    //     version: "1.0.0",
-    //     main: "src/index.js",
-    //     scripts: {
-    //       start: "node src/index.js",
-    //     },
-    //     dependencies: {
-    //       express: "^4.18.2",
-    //     },
-    //     ...formData,
-    //   },
-    //   null,
-    //   2,
-    // ),
   );
   pkg.setPathList([]);
 
   const gitignore = new File();
   gitignore.setId("4");
   gitignore.setName(".gitignore");
-  gitignore.setContent("node_modules/\n");
+  gitignore.setContent("node_modules/\n.env\n");
   gitignore.setPathList([]);
 
-  return [indexJs, readme, pkg, gitignore];
+  const env = new File();
+  env.setId("5");
+  env.setName(".env");
+  env.setContent("PORT=3001\n");
+  env.setPathList([]);
+
+  return [indexJs, readme, pkg, gitignore, env];
 };
 
 export default createNodeJSInitFiles;

@@ -9,7 +9,6 @@ import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useState } from "react";
 import { useFileUpload } from "../../hooks/useFileService";
-import { useGreeter } from "../../hooks/useGreeter";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
@@ -27,13 +26,8 @@ const CodeEditor = () => {
     files,
     selectedBackend,
   } = appStore();
-  const {
-    sayHello,
-    reply: greet_reply,
-    error: greet_error,
-    loading: greet_loading,
-  } = useGreeter();
-  const { uploadProject, status, loading, error } = useFileUpload();
+
+  const { uploadProject, status, loading, error, link } = useFileUpload();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -60,19 +54,19 @@ const CodeEditor = () => {
   };
 
   useEffect(() => {
-    if (greet_loading) {
+    if (loading) {
       messageApi.loading("Uploading Files", 2.5);
       return;
     }
-    if (greet_error) {
+    if (error) {
       messageApi.error("Something went wrong");
       return;
     }
-    if (!greet_loading && !greet_error && greet_reply) {
+    if (!loading && !error && status) {
       messageApi.destroy();
-      messageApi.success(greet_reply);
+      messageApi.success(`Status: ${status}\nLink: ${link}`);
     }
-  }, [greet_error, greet_loading, greet_reply, messageApi]);
+  }, [loading, error, status, link, messageApi]);
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },

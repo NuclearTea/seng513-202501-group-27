@@ -5,18 +5,31 @@ services:
       dockerfile: Dockerfile.server
     container_name: grpc-server
     ports:
-      - "8080:8080"
-
-  # Optional: Envoy for gRPC-Web proxying
-  envoy:
-    image: envoyproxy/envoy-dev:latest # includes all filters
-    container_name: envoy
+      - "8080:8080" # gRPC server port
     volumes:
-      - type: bind
-        source: ./docker/envoy.yaml
-        target: /etc/envoy/envoy.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./projects:/tmp/projects
+      - ./nginx/sites:/etc/nginx/sites-available
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+
+  nginx:
+    image: nginx:stable
+    container_name: nginx
     ports:
-      - "8081:8081"
-      - "9901:9901" # admin
+      - "80:80"
+    volumes:
+      - ./nginx/sites:/etc/nginx/sites-available
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    container_name: envoy
+    ports:
+      - "8081:8081" # gRPC-Web entry point
+      - "9901:9901" # Admin
+    volumes:
+      - ./docker/envoy.yaml:/etc/envoy/envoy.yaml
     depends_on:
       - grpc-server

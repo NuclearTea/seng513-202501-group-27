@@ -15,7 +15,7 @@ export const useFileUpload = () => {
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [link, setLink] = useState<string | null>(null);
   const uploadProject = useCallback(
     (rootDirectory: Directory, projectType: ValidBackends) => {
       const request = new UploadRequest();
@@ -31,6 +31,7 @@ export const useFileUpload = () => {
           setError(err.message);
         } else if (response) {
           setStatus(response.getStatus());
+          setLink(response.getUrl());
           console.log(response.toObject());
         }
         setLoading(false);
@@ -39,5 +40,5 @@ export const useFileUpload = () => {
     [],
   );
 
-  return { status, loading, error, uploadProject };
+  return { status, loading, error, link, uploadProject };
 };

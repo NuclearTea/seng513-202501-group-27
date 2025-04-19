@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -18,13 +19,21 @@ func WriteDirectory(base string, dir *pb.Directory) (string, error) {
 	for _, child := range dir.GetChildren() {
 		switch x := child.Node.(type) {
 		case *pb.Child_File:
-			filePath := filepath.Join(currentPath, x.File.GetName())
+			fileDir := filepath.Join(base, filepath.Join(x.File.GetPath()...))
+			if err := os.MkdirAll(fileDir, 0755); err != nil {
+				return "", err
+			}
+			filePath := filepath.Join(fileDir, x.File.GetName())
 			if err := os.WriteFile(filePath, []byte(x.File.GetContent()), 0644); err != nil {
 				return "", err
 			}
+
+			fmt.Printf("[write] %s\n", filePath) // ✅ Log written file
+
 			if x.File.GetName() == "package.json" {
 				packageJSONPath = filePath
 			}
+
 		case *pb.Child_Directory:
 			subPath, err := WriteDirectory(base, x.Directory)
 			if err != nil {
@@ -35,5 +44,6 @@ func WriteDirectory(base string, dir *pb.Directory) (string, error) {
 			}
 		}
 	}
+
 	return packageJSONPath, nil
 }

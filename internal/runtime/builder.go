@@ -26,8 +26,10 @@ func BuildDockerImage(projectDir, imageName string) error {
 	return cmd.Run()
 }
 
-func RunDockerContainer(imageName string, port int) error {
-	cmd := exec.Command("docker", "run", "-d", "-p", fmt.Sprintf("%d:3000", port), "--rm", imageName)
+func RunDockerContainer(imageName string, hostPort int, containerPort int) error {
+	cmd := exec.Command("docker", "run", "-d",
+		"-p", fmt.Sprintf("%d:%d", hostPort, containerPort),
+		"--rm", imageName)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
