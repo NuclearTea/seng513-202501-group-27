@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package filetree;
+
+option go_package = "./filetree;filetree";
+
+service FileService { rpc Upload(UploadRequest) returns (UploadResponse); }
+
+message File {
+  string content = 1;
+  string id = 2;
+  string name = 3;
+  repeated string path = 4;
+}
+
+message Directory {
+  string name = 1;
+  repeated string path = 2;
+  repeated Child children = 3;
+}
+
+message Child {
+  oneof node {
+    File file = 1;
+    Directory directory = 2;
+  }
+}
+enum BackendType {
+  UNSPECIFIED = 0;
+  NODEJS = 1;
+  FLASK = 2;
+  JAVA = 3;
+  RUBY = 4;
+}
+
+message UploadRequest {
+  Directory root = 1;
+  BackendType projectType = 2;
+}
+
+message UploadResponse {
+  string status = 1;
+  string url = 2;
+}

@@ -1,4 +1,4 @@
-# ✅ Match runtime with build to avoid GLIBC mismatch
+# ✅ Stage 1: Build Go binary
 FROM golang:1.24-bullseye AS builder
 
 WORKDIR /app
@@ -10,10 +10,15 @@ COPY . .
 
 RUN go build -o grpc-server ./server
 
-# Final stage
+# ✅ Stage 2: Runtime with Docker CLI support
 FROM debian:bullseye-slim
 
+# Install Docker CLI
+RUN apt-get update && apt-get install -y docker.io ca-certificates && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+# Copy server binary
 COPY --from=builder /app/grpc-server .
 
 EXPOSE 8080

@@ -8,18 +8,26 @@ import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useState } from "react";
+import { useFileUpload } from "../../hooks/useFileService";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
-import FileEditor from "../FileEditor/FileEditor";
+import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
-import { useGreeter } from "../../hooks/useGreeter";
+import FileEditor from "../FileEditor/FileEditor";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
-  const { sayHello, reply, error, loading } = useGreeter();
+  const {
+    getFileByPath,
+    setSelectedFile,
+    selectedFile,
+    files,
+    selectedBackend,
+  } = appStore();
+
+  const { uploadProject, status, loading, error, link } = useFileUpload();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -39,7 +47,10 @@ const CodeEditor = () => {
   };
 
   const handleRunButton = () => {
-    sayHello("Ali");
+    // sayHello("Ali");
+    const asDir = buildDirectoryTree(files);
+    // console.log(asDir.toObject());
+    uploadProject(asDir, selectedBackend);
   };
 
   useEffect(() => {
@@ -51,11 +62,11 @@ const CodeEditor = () => {
       messageApi.error("Something went wrong");
       return;
     }
-    if (!loading && !error && reply) {
+    if (!loading && !error && status) {
       messageApi.destroy();
-      messageApi.success(reply);
+      messageApi.success(`Status: ${status}\nLink: ${link}`);
     }
-  }, [error, loading, reply, messageApi]);
+  }, [loading, error, status, link, messageApi]);
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },

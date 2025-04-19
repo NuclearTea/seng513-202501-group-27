@@ -15,13 +15,22 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: local_service
+                    - name: backend
                       domains: ["*"]
+                      cors:
+                        allow_origin_string_match:
+                          - prefix: "*"
+                        allow_methods: "GET, POST, OPTIONS"
+                        allow_headers: "keep-alive, user-agent, cache-control, content-type, x-grpc-web, grpc-timeout"
+                        expose_headers: "grpc-status, grpc-message"
+                        max_age: "86400"
+                        allow_credentials: true
                       routes:
                         - match:
                             prefix: "/"
                           route:
                             cluster: grpc-backend
+                            max_grpc_timeout: 0s
                 http_filters:
                   - name: envoy.filters.http.grpc_web
                     typed_config:
@@ -35,9 +44,9 @@ static_resources:
 
   clusters:
     - name: grpc-backend
-      type: logical_dns
+      type: LOGICAL_DNS
       connect_timeout: 0.25s
-      http2_protocol_options: {} # Deprecated but often necessary for gRPC
+      http2_protocol_options: {}
       load_assignment:
         cluster_name: grpc-backend
         endpoints:
@@ -45,6 +54,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
+                      # Use 'grpc-server' as the service name in Docker Compose
                       address: grpc-server
                       port_value: 8080
 

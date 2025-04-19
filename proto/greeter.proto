@@ -4,7 +4,7 @@ package greeter;
 
 // This tells Go where to generate and import code from
 // option go_package = "seng513-202501-group-27/gen/;greeter";
-option go_package = "./;greeter";
+option go_package = "./greeter;greeter";
 service Greeter { rpc SayHello(HelloRequest) returns (HelloReply); }
 
 message HelloRequest { string name = 1; }

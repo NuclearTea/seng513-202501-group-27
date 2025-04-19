@@ -1,7 +1,6 @@
 import React from "react";
 import CodeEditor from "./components/CodeEditor/CodeEditor";
 import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm";
-import { Modal } from "antd";
 import appStore from "./state/app.store";
 
 const App: React.FC = () => {

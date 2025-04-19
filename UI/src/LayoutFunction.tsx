@@ -1,11 +1,11 @@
 import { FileOutlined, FolderOutlined } from "@ant-design/icons";
-import { File } from "./types";
-// import { FolderOutlined, FileOutlined } from "@ant-design/icons";
+import { File } from "./proto/filetree/filetree_pb";
 import { MenuProps } from "antd";
-import MenuItem from "antd/es/menu/MenuItem";
+import React from "react";
 import hasKey from "./utility/hasKey";
 
 export type MenuItem = Required<MenuProps>["items"][number];
+
 export function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -19,35 +19,32 @@ export function getItem(
     label,
   } as MenuItem;
 }
-// Sample files data
-export const fileData: File[] = [
-  { path: ["Documents", "File1.txt"], name: "File1.txt", content: "", id: "1" },
-  { path: ["Documents", "File2.txt"], name: "File2.txt", content: "", id: "2" },
-  {
-    path: ["Documents", "Folder1", "File3.txt"],
-    name: "File3.txt",
-    content: "",
-    id: "3",
-  },
-  {
-    path: ["Pictures", "Image1.png"],
-    name: "Image1.png",
-    content: "",
-    id: "4",
-  },
-  {
-    path: ["Pictures", "Image2.png"],
-    name: "Image2.png",
-    content: "",
-    id: "5",
-  },
-  {
-    path: ["Pictures", "Folder2", "Image3.png"],
-    name: "Image3.png",
-    content: "",
-    id: "6",
-  },
-];
+
+// ✅ Create File instances instead of plain objects
+export const fileData: File[] = (() => {
+  const createFile = (
+    id: string,
+    name: string,
+    content: string,
+    path: string[],
+  ): File => {
+    const f = new File();
+    f.setId(id);
+    f.setName(name);
+    f.setContent(content);
+    f.setPathList(path);
+    return f;
+  };
+
+  return [
+    createFile("1", "File1.txt", "", ["Documents"]),
+    createFile("2", "File2.txt", "", ["Documents"]),
+    createFile("3", "File3.txt", "", ["Documents", "Folder1"]),
+    createFile("4", "Image1.png", "", ["Pictures"]),
+    createFile("5", "Image2.png", "", ["Pictures"]),
+    createFile("6", "Image3.png", "", ["Pictures", "Folder2"]),
+  ];
+})();
 
 export const buildMenuItemsFromFiles = (files: File[]): MenuItem[] => {
   const fileStructure = files.reduce(
@@ -55,21 +52,21 @@ export const buildMenuItemsFromFiles = (files: File[]): MenuItem[] => {
       let current = acc;
 
       // Traverse each part of the file path to create directories
-      file.path.forEach((folder) => {
+      for (const folder of file.getPathList()) {
         if (!hasKey(current, folder)) {
           current[folder] = {};
         }
         current = current[folder];
-      });
+      }
 
-      // Add the file to the directory structure
-      current[file.name] = file;
+      // Add the file object into the structure
+      current[file.getName()] = file;
       return acc;
     },
     {} as Record<string, any>,
   );
 
-  // Function to recursively convert the directory structure into MenuItems
+  // Recursive conversion to MenuItem[]
   const convertToMenuItems = (
     structure: any,
     parentPath: string[] = [],
@@ -78,24 +75,12 @@ export const buildMenuItemsFromFiles = (files: File[]): MenuItem[] => {
       const currentPath = [...parentPath, key];
       const item = structure[key];
 
-      // If the item is a file, return a MenuItem with no children
-      if (item && item.path) {
-        return getItem(
-          key, // File name
-          currentPath.join("/"), // Key is the joined path
-          <FileOutlined />, // File icon
-        );
+      if (item instanceof File) {
+        return getItem(item.getName(), currentPath.join("/"), <FileOutlined />);
       }
 
-      // If the item is a directory, recursively get its children
       const children = convertToMenuItems(item, currentPath);
-
-      return getItem(
-        key, // Directory name
-        currentPath.join("/"), // Key is the joined path
-        <FolderOutlined />, // Folder icon
-        children, // Children directories and files
-      );
+      return getItem(key, currentPath.join("/"), <FolderOutlined />, children);
     });
   };
 

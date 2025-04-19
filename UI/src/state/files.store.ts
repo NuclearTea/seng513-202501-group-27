@@ -1,19 +1,20 @@
 import { StateCreator } from "zustand";
-import { File } from "../types";
-import { ValidBackends } from "../components/CreateProjectForm/CreateProjectForm";
+import { File } from "../proto/filetree/filetree_pb";
 import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
 import NodeJSInitFileStructure from "../utility/NodeJS.init";
+import { ValidBackends } from "../types/ValidBackends";
 
 export type FileSlice = {
   files: File[];
   selectedFile: File | null;
   content: string;
+  selectedBackend: ValidBackends;
+  setSelectedBackend: (str: ValidBackends) => void;
   setSelectedFile: (file: File) => void;
-  updateFileContent: (id: File["id"], content: string) => void;
+  updateFileContent: (id: string, content: string) => void;
   setFiles: (files: File[]) => void;
   addFile: (file: File) => void;
   getFileByPath: (filePath: string) => File | null;
-  // TODO: update form data type to reflect all types of backends
   generateInitialFiles: (
     selectedBackend: ValidBackends,
     formData: NodeJSInitFormData,
@@ -22,25 +23,34 @@ export type FileSlice = {
 
 export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   files: [],
-  selectedFile: null as File | null,
+  selectedFile: null,
   content: "",
+  selectedBackend: "Node.JS", // default
+  setSelectedBackend: (str) => {
+    set(() => ({ selectedBackend: str }));
+  },
   setSelectedFile: (file: File) => {
     set({ selectedFile: file });
   },
+
   setFiles: (files: File[]) => {
     set({ files });
   },
-  updateFileContent: (id: File["id"], content: string) => {
+
+  updateFileContent: (id: string, content: string) => {
     set((state) => {
-      const files = state.files;
-      if (!files || files.length === 0) return state;
-
-      const fileIndex = files.findIndex((f) => f.id === id);
-      if (fileIndex === -1) return state;
-
-      const newFile = { ...files[fileIndex], content };
-      const newFiles = files.map((obj, i) => (i === fileIndex ? newFile : obj));
-      return { ...state, files: newFiles };
+      const updatedFiles = state.files.map((file) => {
+        if (file.getId() === id) {
+          const updatedFile = new File()
+            .setId(file.getId())
+            .setName(file.getName())
+            .setPathList(file.getPathList())
+            .setContent(content);
+          return updatedFile;
+        }
+        return file;
+      });
+      return { ...state, files: updatedFiles };
     });
   },
   addFile: (file: File) =>
@@ -50,25 +60,32 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
 
   getFileByPath: (filePath: string) => {
     const { files } = get();
-    const filePathLowerCase = filePath.toLowerCase();
-    const file = files.find(
-      (f) =>
-        f.path
+    const targetPath = filePath.toLowerCase();
+
+    return (
+      files.find((f) => {
+        const fullPath = [...f.getPathList(), f.getName()]
           .join("/")
-          .concat(`${f.path.length ? "/" : ""}${f.name}`)
-          .toLowerCase() === filePathLowerCase,
+          .toLowerCase();
+        return fullPath === targetPath;
+      }) ?? null
     );
-    return file ?? null;
   },
+
   generateInitialFiles: (selectedBackend: ValidBackends, formData) => {
     let newFiles: File[] = [];
+
     switch (selectedBackend) {
       case "Node.JS":
         newFiles = NodeJSInitFileStructure(formData);
+        break;
+      // Add more backends here
     }
+
     set(() => ({
       files: newFiles,
     }));
+
     return newFiles;
   },
 });

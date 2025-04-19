@@ -1,23 +1,16 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net"
 
+	filetreepb "seng513-202501-group-27/gen/filetree"
+	// greeterpb "seng513-202501-group-27/gen/greeter"
+	"seng513-202501-group-27/internal/runtime"
+
 	"google.golang.org/grpc"
-	// "seng513-202501-group-27/gen/go/greeter"
-	greeter "seng513-202501-group-27/gen"
+	"google.golang.org/grpc/reflection"
 )
-
-type server struct {
-	greeter.UnimplementedGreeterServer
-}
-
-func (s *server) SayHello(ctx context.Context, req *greeter.HelloRequest) (*greeter.HelloReply, error) {
-	msg := "Hello, " + req.GetName()
-	return &greeter.HelloReply{Message: msg}, nil
-}
 
 func main() {
 	lis, err := net.Listen("tcp", ":8080")
@@ -25,11 +18,12 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
-	greeter.RegisterGreeterServer(grpcServer, &server{})
+	s := grpc.NewServer()
+	filetreepb.RegisterFileServiceServer(s, &runtime.Server{})
+	reflection.Register(s)
 
-	log.Println("gRPC server listening on :8080")
-	if err := grpcServer.Serve(lis); err != nil {
+	log.Println("Server running on :8080")
+	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
