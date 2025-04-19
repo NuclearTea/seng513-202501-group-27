@@ -8,6 +8,8 @@ export type FileSlice = {
   files: File[];
   selectedFile: File | null;
   content: string;
+  selectedBackend: ValidBackends;
+  setSelectedBackend: (str: ValidBackends) => void;
   setSelectedFile: (file: File) => void;
   updateFileContent: (id: string, content: string) => void;
   setFiles: (files: File[]) => void;
@@ -23,7 +25,10 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   files: [],
   selectedFile: null,
   content: "",
-
+  selectedBackend: "Node.JS", // default
+  setSelectedBackend: (str) => {
+    set(() => ({ selectedBackend: str }));
+  },
   setSelectedFile: (file: File) => {
     set({ selectedFile: file });
   },

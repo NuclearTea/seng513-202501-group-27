@@ -20,7 +20,13 @@ const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
+  const {
+    getFileByPath,
+    setSelectedFile,
+    selectedFile,
+    files,
+    selectedBackend,
+  } = appStore();
   const {
     sayHello,
     reply: greet_reply,
@@ -50,7 +56,7 @@ const CodeEditor = () => {
     sayHello("Ali");
     const asDir = buildDirectoryTree(files);
     // console.log(asDir.toObject());
-    uploadProject(asDir);
+    uploadProject(asDir, selectedBackend);
   };
 
   useEffect(() => {

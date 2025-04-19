@@ -1,13 +1,12 @@
 import { message } from "antd";
-import { useState } from "react";
-import { ValidBackends, isValidBackendStr } from "../../types/ValidBackends";
+import appStore from "../../state/app.store";
+import { isValidBackendStr } from "../../types/ValidBackends";
 import "./CreateProjectForm.css";
 import NpmInitForm from "./NpmInitForm";
 import PythonInitForm from "./PythonInitForm";
 
 const CreateProjectForm = () => {
-  const [selectedBackend, setSelectedBackend] =
-    useState<ValidBackends>("Node.JS");
+  const { selectedBackend, setSelectedBackend } = appStore();
 
   const handleSelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
