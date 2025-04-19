@@ -1,8 +1,8 @@
 import { StateCreator } from "zustand";
 import { File } from "../proto/filetree/filetree_pb";
-import { ValidBackends } from "../components/CreateProjectForm/CreateProjectForm";
 import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
 import NodeJSInitFileStructure from "../utility/NodeJS.init";
+import { ValidBackends } from "../types/ValidBackends";
 
 export type FileSlice = {
   files: File[];

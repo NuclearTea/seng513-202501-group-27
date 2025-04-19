@@ -21,6 +21,7 @@ var global = (function() {
   return Function('return this')();
 }.call(null));
 
+goog.exportSymbol('proto.filetree.BackendType', null, global);
 goog.exportSymbol('proto.filetree.Child', null, global);
 goog.exportSymbol('proto.filetree.Child.NodeCase', null, global);
 goog.exportSymbol('proto.filetree.Directory', null, global);
@@ -877,7 +878,8 @@ proto.filetree.UploadRequest.prototype.toObject = function(opt_includeInstance) 
  */
 proto.filetree.UploadRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    root: (f = msg.getRoot()) && proto.filetree.Directory.toObject(includeInstance, f)
+    root: (f = msg.getRoot()) && proto.filetree.Directory.toObject(includeInstance, f),
+    projecttype: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -919,6 +921,10 @@ proto.filetree.UploadRequest.deserializeBinaryFromReader = function(msg, reader)
       reader.readMessage(value,proto.filetree.Directory.deserializeBinaryFromReader);
       msg.setRoot(value);
       break;
+    case 2:
+      var value = /** @type {!proto.filetree.BackendType} */ (reader.readEnum());
+      msg.setProjecttype(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -954,6 +960,13 @@ proto.filetree.UploadRequest.serializeBinaryToWriter = function(message, writer)
       1,
       f,
       proto.filetree.Directory.serializeBinaryToWriter
+    );
+  }
+  f = message.getProjecttype();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      2,
+      f
     );
   }
 };
@@ -993,6 +1006,24 @@ proto.filetree.UploadRequest.prototype.clearRoot = function() {
  */
 proto.filetree.UploadRequest.prototype.hasRoot = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional BackendType projectType = 2;
+ * @return {!proto.filetree.BackendType}
+ */
+proto.filetree.UploadRequest.prototype.getProjecttype = function() {
+  return /** @type {!proto.filetree.BackendType} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {!proto.filetree.BackendType} value
+ * @return {!proto.filetree.UploadRequest} returns this
+ */
+proto.filetree.UploadRequest.prototype.setProjecttype = function(value) {
+  return jspb.Message.setProto3EnumField(this, 2, value);
 };
 
 
@@ -1125,5 +1156,16 @@ proto.filetree.UploadResponse.prototype.setStatus = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
+
+/**
+ * @enum {number}
+ */
+proto.filetree.BackendType = {
+  UNSPECIFIED: 0,
+  NODEJS: 1,
+  FLASK: 2,
+  JAVA: 3,
+  RUBY: 4
+};
 
 goog.object.extend(exports, proto.filetree);

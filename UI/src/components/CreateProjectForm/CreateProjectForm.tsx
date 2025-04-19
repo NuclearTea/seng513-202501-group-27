@@ -1,21 +1,10 @@
+import { message } from "antd";
 import { useState } from "react";
+import { ValidBackends, isValidBackendStr } from "../../types/ValidBackends";
+import "./CreateProjectForm.css";
 import NpmInitForm from "./NpmInitForm";
 import PythonInitForm from "./PythonInitForm";
-import "./CreateProjectForm.css";
-import { message } from "antd";
 
-export type ValidBackends = "Node.JS" | "Python" | "Ruby" | "Java (Spring)";
-export function isValidBackend(str: string): str is ValidBackends {
-  switch (str) {
-    case "Node.JS":
-    case "Python":
-    case "Ruby":
-    case "Java (Spring)":
-      return true;
-    default:
-      return false;
-  }
-}
 const CreateProjectForm = () => {
   const [selectedBackend, setSelectedBackend] =
     useState<ValidBackends>("Node.JS");
@@ -24,7 +13,7 @@ const CreateProjectForm = () => {
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const val = event.target.value;
-    if (isValidBackend(val)) {
+    if (isValidBackendStr(val)) {
       setSelectedBackend(val);
       return;
     }

@@ -2,37 +2,85 @@ import { File } from "../proto/filetree/filetree_pb";
 import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
 
 const createNodeJSInitFiles = (formData: NodeJSInitFormData): File[] => {
-  const file1 = new File();
-  file1.setId("1");
-  file1.setName("index.js");
-  file1.setContent("console.log('Hello World')");
-  file1.setPathList(["src"]);
+  const indexJs = new File();
+  indexJs.setId("1");
+  indexJs.setName("index.js");
+  indexJs.setContent(
+    `
+const express = require('express');
+const app = express();
+const port = 3000;
 
-  const file2 = new File();
-  file2.setId("2");
-  file2.setName("App.js");
-  file2.setContent("");
-  file2.setPathList(["src"]);
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-  const file3 = new File();
-  file3.setId("3");
-  file3.setName("styles.css");
-  file3.setContent("");
-  file3.setPathList(["src"]);
+app.listen(port, () => {
+  console.log(\`Server is running at http://localhost:\${port}\`);
+});
+  `.trim(),
+  );
+  indexJs.setPathList(["src"]);
 
-  const file4 = new File();
-  file4.setId("4");
-  file4.setName("README.md");
-  file4.setContent("");
-  file4.setPathList([]);
+  const readme = new File();
+  readme.setId("2");
+  readme.setName("README.md");
+  readme.setContent(`# Hello World Web Server
 
-  const file5 = new File();
-  file5.setId("5");
-  file5.setName("package.json");
-  file5.setContent(JSON.stringify(formData, null, 2));
-  file5.setPathList([]);
+Run the following commands to start:
 
-  return [file1, file2, file3, file4, file5];
+\`\`\`bash
+npm install
+node src/index.js
+\`\`\`
+`);
+  readme.setPathList([]);
+
+  const pkg = new File();
+  pkg.setId("3");
+  pkg.setName("package.json");
+  pkg.setContent(
+    JSON.stringify(
+      {
+        ...formData,
+        main: "src/index.js",
+        scripts: {
+          start: "node src/index.js",
+        },
+        dependencies: {
+          express: "^4.18.2",
+        },
+      },
+
+      null,
+      2,
+    ),
+    // JSON.stringify(
+    //   {
+    //     name: formData.name || "hello-world-server",
+    //     version: "1.0.0",
+    //     main: "src/index.js",
+    //     scripts: {
+    //       start: "node src/index.js",
+    //     },
+    //     dependencies: {
+    //       express: "^4.18.2",
+    //     },
+    //     ...formData,
+    //   },
+    //   null,
+    //   2,
+    // ),
+  );
+  pkg.setPathList([]);
+
+  const gitignore = new File();
+  gitignore.setId("4");
+  gitignore.setName(".gitignore");
+  gitignore.setContent("node_modules/\n");
+  gitignore.setPathList([]);
+
+  return [indexJs, readme, pkg, gitignore];
 };
 
 export default createNodeJSInitFiles;

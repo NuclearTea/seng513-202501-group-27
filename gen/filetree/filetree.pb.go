@@ -21,6 +21,61 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type BackendType int32
+
+const (
+	BackendType_UNSPECIFIED BackendType = 0
+	BackendType_NODEJS      BackendType = 1
+	BackendType_FLASK       BackendType = 2
+	BackendType_JAVA        BackendType = 3
+	BackendType_RUBY        BackendType = 4
+)
+
+// Enum value maps for BackendType.
+var (
+	BackendType_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "NODEJS",
+		2: "FLASK",
+		3: "JAVA",
+		4: "RUBY",
+	}
+	BackendType_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"NODEJS":      1,
+		"FLASK":       2,
+		"JAVA":        3,
+		"RUBY":        4,
+	}
+)
+
+func (x BackendType) Enum() *BackendType {
+	p := new(BackendType)
+	*p = x
+	return p
+}
+
+func (x BackendType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (BackendType) Descriptor() protoreflect.EnumDescriptor {
+	return file_filetree_proto_enumTypes[0].Descriptor()
+}
+
+func (BackendType) Type() protoreflect.EnumType {
+	return &file_filetree_proto_enumTypes[0]
+}
+
+func (x BackendType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use BackendType.Descriptor instead.
+func (BackendType) EnumDescriptor() ([]byte, []int) {
+	return file_filetree_proto_rawDescGZIP(), []int{0}
+}
+
 type File struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Content       string                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
@@ -234,6 +289,7 @@ func (*Child_Directory) isChild_Node() {}
 type UploadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Root          *Directory             `protobuf:"bytes,1,opt,name=root,proto3" json:"root,omitempty"`
+	ProjectType   BackendType            `protobuf:"varint,2,opt,name=projectType,proto3,enum=filetree.BackendType" json:"projectType,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -273,6 +329,13 @@ func (x *UploadRequest) GetRoot() *Directory {
 		return x.Root
 	}
 	return nil
+}
+
+func (x *UploadRequest) GetProjectType() BackendType {
+	if x != nil {
+		return x.ProjectType
+	}
+	return BackendType_UNSPECIFIED
 }
 
 type UploadResponse struct {
@@ -336,11 +399,19 @@ const file_filetree_proto_rawDesc = "" +
 	"\x05Child\x12$\n" +
 	"\x04file\x18\x01 \x01(\v2\x0e.filetree.FileH\x00R\x04file\x123\n" +
 	"\tdirectory\x18\x02 \x01(\v2\x13.filetree.DirectoryH\x00R\tdirectoryB\x06\n" +
-	"\x04node\"8\n" +
+	"\x04node\"q\n" +
 	"\rUploadRequest\x12'\n" +
-	"\x04root\x18\x01 \x01(\v2\x13.filetree.DirectoryR\x04root\"(\n" +
+	"\x04root\x18\x01 \x01(\v2\x13.filetree.DirectoryR\x04root\x127\n" +
+	"\vprojectType\x18\x02 \x01(\x0e2\x15.filetree.BackendTypeR\vprojectType\"(\n" +
 	"\x0eUploadResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status2J\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status*I\n" +
+	"\vBackendType\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\n" +
+	"\n" +
+	"\x06NODEJS\x10\x01\x12\t\n" +
+	"\x05FLASK\x10\x02\x12\b\n" +
+	"\x04JAVA\x10\x03\x12\b\n" +
+	"\x04RUBY\x10\x042J\n" +
 	"\vFileService\x12;\n" +
 	"\x06Upload\x12\x17.filetree.UploadRequest\x1a\x18.filetree.UploadResponseB\x15Z\x13./filetree;filetreeb\x06proto3"
 
@@ -356,26 +427,29 @@ func file_filetree_proto_rawDescGZIP() []byte {
 	return file_filetree_proto_rawDescData
 }
 
+var file_filetree_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_filetree_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_filetree_proto_goTypes = []any{
-	(*File)(nil),           // 0: filetree.File
-	(*Directory)(nil),      // 1: filetree.Directory
-	(*Child)(nil),          // 2: filetree.Child
-	(*UploadRequest)(nil),  // 3: filetree.UploadRequest
-	(*UploadResponse)(nil), // 4: filetree.UploadResponse
+	(BackendType)(0),       // 0: filetree.BackendType
+	(*File)(nil),           // 1: filetree.File
+	(*Directory)(nil),      // 2: filetree.Directory
+	(*Child)(nil),          // 3: filetree.Child
+	(*UploadRequest)(nil),  // 4: filetree.UploadRequest
+	(*UploadResponse)(nil), // 5: filetree.UploadResponse
 }
 var file_filetree_proto_depIdxs = []int32{
-	2, // 0: filetree.Directory.children:type_name -> filetree.Child
-	0, // 1: filetree.Child.file:type_name -> filetree.File
-	1, // 2: filetree.Child.directory:type_name -> filetree.Directory
-	1, // 3: filetree.UploadRequest.root:type_name -> filetree.Directory
-	3, // 4: filetree.FileService.Upload:input_type -> filetree.UploadRequest
-	4, // 5: filetree.FileService.Upload:output_type -> filetree.UploadResponse
-	5, // [5:6] is the sub-list for method output_type
-	4, // [4:5] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 0: filetree.Directory.children:type_name -> filetree.Child
+	1, // 1: filetree.Child.file:type_name -> filetree.File
+	2, // 2: filetree.Child.directory:type_name -> filetree.Directory
+	2, // 3: filetree.UploadRequest.root:type_name -> filetree.Directory
+	0, // 4: filetree.UploadRequest.projectType:type_name -> filetree.BackendType
+	4, // 5: filetree.FileService.Upload:input_type -> filetree.UploadRequest
+	5, // 6: filetree.FileService.Upload:output_type -> filetree.UploadResponse
+	6, // [6:7] is the sub-list for method output_type
+	5, // [5:6] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_filetree_proto_init() }
@@ -392,13 +466,14 @@ func file_filetree_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_filetree_proto_rawDesc), len(file_filetree_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_filetree_proto_goTypes,
 		DependencyIndexes: file_filetree_proto_depIdxs,
+		EnumInfos:         file_filetree_proto_enumTypes,
 		MessageInfos:      file_filetree_proto_msgTypes,
 	}.Build()
 	File_filetree_proto = out.File

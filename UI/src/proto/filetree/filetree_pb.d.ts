@@ -104,6 +104,9 @@ export class UploadRequest extends jspb.Message {
   hasRoot(): boolean;
   clearRoot(): UploadRequest;
 
+  getProjecttype(): BackendType;
+  setProjecttype(value: BackendType): UploadRequest;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UploadRequest.AsObject;
   static toObject(includeInstance: boolean, msg: UploadRequest): UploadRequest.AsObject;
@@ -115,6 +118,7 @@ export class UploadRequest extends jspb.Message {
 export namespace UploadRequest {
   export type AsObject = {
     root?: Directory.AsObject,
+    projecttype: BackendType,
   }
 }
 
@@ -136,3 +140,10 @@ export namespace UploadResponse {
   }
 }
 
+export enum BackendType { 
+  UNSPECIFIED = 0,
+  NODEJS = 1,
+  FLASK = 2,
+  JAVA = 3,
+  RUBY = 4,
+}

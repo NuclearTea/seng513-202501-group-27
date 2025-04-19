@@ -17,13 +17,13 @@ export type NodeJSInitFormData = {
 const NpmInitForm: () => React.ReactNode = () => {
   const { generateInitialFiles } = appStore();
   const [formData, setFormData] = useState<NodeJSInitFormData>({
-    name: "npmtest",
+    name: "hello-world-server",
     version: "1.0.0",
-    description: "I'm testing the default files created when using npm init",
+    description: "A basic Express Hello World web server",
     entryPoint: "src/index.js",
     testCommand: "",
     gitRepository: "",
-    keywords: "",
+    keywords: "express,hello,server",
     author: "",
     license: "ISC",
   });
