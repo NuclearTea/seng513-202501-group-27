@@ -341,6 +341,7 @@ func (x *UploadRequest) GetProjectType() BackendType {
 type UploadResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -382,6 +383,13 @@ func (x *UploadResponse) GetStatus() string {
 	return ""
 }
 
+func (x *UploadResponse) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
 var File_filetree_proto protoreflect.FileDescriptor
 
 const file_filetree_proto_rawDesc = "" +
@@ -402,9 +410,10 @@ const file_filetree_proto_rawDesc = "" +
 	"\x04node\"q\n" +
 	"\rUploadRequest\x12'\n" +
 	"\x04root\x18\x01 \x01(\v2\x13.filetree.DirectoryR\x04root\x127\n" +
-	"\vprojectType\x18\x02 \x01(\x0e2\x15.filetree.BackendTypeR\vprojectType\"(\n" +
+	"\vprojectType\x18\x02 \x01(\x0e2\x15.filetree.BackendTypeR\vprojectType\":\n" +
 	"\x0eUploadResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status*I\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url*I\n" +
 	"\vBackendType\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\n" +
 	"\n" +

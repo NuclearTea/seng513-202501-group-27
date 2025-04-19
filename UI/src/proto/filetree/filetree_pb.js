@@ -1059,7 +1059,8 @@ proto.filetree.UploadResponse.prototype.toObject = function(opt_includeInstance)
  */
 proto.filetree.UploadResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    status: jspb.Message.getFieldWithDefault(msg, 1, "")
+    status: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    url: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -1100,6 +1101,10 @@ proto.filetree.UploadResponse.deserializeBinaryFromReader = function(msg, reader
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUrl(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1136,6 +1141,13 @@ proto.filetree.UploadResponse.serializeBinaryToWriter = function(message, writer
       f
     );
   }
+  f = message.getUrl();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -1154,6 +1166,24 @@ proto.filetree.UploadResponse.prototype.getStatus = function() {
  */
 proto.filetree.UploadResponse.prototype.setStatus = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string url = 2;
+ * @return {string}
+ */
+proto.filetree.UploadResponse.prototype.getUrl = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.filetree.UploadResponse} returns this
+ */
+proto.filetree.UploadResponse.prototype.setUrl = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

@@ -25,21 +25,6 @@ message Child {
     Directory directory = 2;
   }
 }
-
-// message BackendType {
-//   oneof kind {
-//     NodeJS nodejs = 1;
-//     Flask flask = 2;
-//     Java java = 3;
-//     Ruby ruby = 4;
-//   }
-// }
-//
-// message NodeJS { string type = 1; }
-// message Flask { string type = 1; }
-// message Java { string type = 1; }
-// message Ruby { string type = 1; }
-
 enum BackendType {
   UNSPECIFIED = 0;
   NODEJS = 1;
@@ -53,4 +38,7 @@ message UploadRequest {
   BackendType projectType = 2;
 }
 
-message UploadResponse { string status = 1; }
+message UploadResponse {
+  string status = 1;
+  string url = 2;
+}

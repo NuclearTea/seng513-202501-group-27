@@ -53,7 +53,7 @@ const CodeEditor = () => {
   };
 
   const handleRunButton = () => {
-    sayHello("Ali");
+    // sayHello("Ali");
     const asDir = buildDirectoryTree(files);
     // console.log(asDir.toObject());
     uploadProject(asDir, selectedBackend);

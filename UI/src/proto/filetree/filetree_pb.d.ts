@@ -126,6 +126,9 @@ export class UploadResponse extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): UploadResponse;
 
+  getUrl(): string;
+  setUrl(value: string): UploadResponse;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UploadResponse.AsObject;
   static toObject(includeInstance: boolean, msg: UploadResponse): UploadResponse.AsObject;
@@ -137,6 +140,7 @@ export class UploadResponse extends jspb.Message {
 export namespace UploadResponse {
   export type AsObject = {
     status: string,
+    url: string,
   }
 }
 
