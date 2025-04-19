@@ -42,12 +42,12 @@ const FileEditor = () => {
   const [content, setContentLocal] = useState<string>(
     selectedFile?.getContent() ?? "",
   );
-
+  const selectedFileId = selectedFile?.getId();
   useEffect(() => {
     if (selectedFile) {
       setContentLocal(selectedFile.getContent());
     }
-  }, [selectedFile, selectedFile?.getId()]);
+  }, [selectedFile, selectedFileId]);
 
   if (!selectedFile) {
     return <div>Something went wrong with selecting your file</div>;
