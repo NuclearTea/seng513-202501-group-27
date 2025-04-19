@@ -8,20 +8,26 @@ import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useState } from "react";
+import { useFileUpload } from "../../hooks/useFileService";
+import { useGreeter } from "../../hooks/useGreeter";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
-import FileEditor from "../FileEditor/FileEditor";
+import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
-import { useGreeter } from "../../hooks/useGreeter";
-import { useFileUpload } from "../../hooks/useFileService";
+import FileEditor from "../FileEditor/FileEditor";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { getFileByPath, setSelectedFile, selectedFile, files } = appStore();
-  const { sayHello, reply, error, loading } = useGreeter();
-  const { upload, status, loading, error } = useFileUpload();
+  const {
+    sayHello,
+    reply: greet_reply,
+    error: greet_error,
+    loading: greet_loading,
+  } = useGreeter();
+  const { uploadProject, status, loading, error } = useFileUpload();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -42,22 +48,25 @@ const CodeEditor = () => {
 
   const handleRunButton = () => {
     sayHello("Ali");
+    const asDir = buildDirectoryTree(files);
+    // console.log(asDir.toObject());
+    uploadProject(asDir);
   };
 
   useEffect(() => {
-    if (loading) {
+    if (greet_loading) {
       messageApi.loading("Uploading Files", 2.5);
       return;
     }
-    if (error) {
+    if (greet_error) {
       messageApi.error("Something went wrong");
       return;
     }
-    if (!loading && !error && reply) {
+    if (!greet_loading && !greet_error && greet_reply) {
       messageApi.destroy();
-      messageApi.success(reply);
+      messageApi.success(greet_reply);
     }
-  }, [error, loading, reply, messageApi]);
+  }, [greet_error, greet_loading, greet_reply, messageApi]);
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },

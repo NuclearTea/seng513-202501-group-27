@@ -1,31 +1,25 @@
-import MonacoEditor from "@monaco-editor/react"; // Monaco Editor package
+import MonacoEditor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
-import appStore from "../../state/app.store"; // Your app store
-
-import { File } from "../../types";
+import appStore from "../../state/app.store";
+import { File } from "../../proto/filetree/filetree_pb";
 import "./fileEditor.css";
 
 const determineLanguage = (f: File): string => {
-  const fileNameSplit = f.name.split(".");
+  const fileNameSplit = f.getName().split(".");
   const fileNameEnding = fileNameSplit[fileNameSplit.length - 1];
   if (!fileNameEnding) return "markdown";
-  switch (fileNameEnding) {
+  switch (fileNameEnding.toLowerCase()) {
     case "js":
-      return "javascript";
     case "jsx":
       return "javascript";
     case "ts":
-      return "typescript";
     case "tsx":
       return "typescript";
     case "c":
-      return "cpp";
     case "cpp":
-      return "cpp";
     case "c++":
       return "cpp";
     case "csharp":
-      return "c#";
     case "c#":
       return "c#";
     case "css":
@@ -33,8 +27,6 @@ const determineLanguage = (f: File): string => {
     case "html":
       return "html";
     case "md":
-      return "markdown";
-    case "MD":
       return "markdown";
     case "json":
       return "json";
@@ -48,14 +40,14 @@ const FileEditor = () => {
   const updateFileContent = appStore().updateFileContent;
 
   const [content, setContentLocal] = useState<string>(
-    selectedFile?.content ?? "",
+    selectedFile?.getContent() ?? "",
   );
 
   useEffect(() => {
     if (selectedFile) {
-      setContentLocal(selectedFile.content);
+      setContentLocal(selectedFile.getContent());
     }
-  }, [selectedFile, selectedFile?.id]);
+  }, [selectedFile, selectedFile?.getId()]);
 
   if (!selectedFile) {
     return <div>Something went wrong with selecting your file</div>;
@@ -64,17 +56,17 @@ const FileEditor = () => {
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
       setContentLocal(value);
-      updateFileContent(selectedFile.id, value);
+      updateFileContent(selectedFile.getId(), value);
     }
   };
-  console.log(selectedFile.content);
-  // React 19 doesn't require useMemo, but would've been used here
+
   const language = determineLanguage(selectedFile);
+
   return (
     <div className="file-editor-container">
       <MonacoEditor
         className="monaco-editor"
-        path={selectedFile.name}
+        path={selectedFile.getName()}
         defaultLanguage={language}
         value={content}
         onChange={handleEditorChange}

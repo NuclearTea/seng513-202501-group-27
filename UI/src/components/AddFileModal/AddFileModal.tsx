@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import React, { useState } from "react";
 import { v4 } from "uuid";
 import appStore from "../../state/app.store";
-import { File } from "../../types";
+import { File } from "../../proto/filetree/filetree_pb";
 
 const validateFileName = (fileName: string): boolean => {
   if (!fileName.trim()) {
@@ -68,12 +68,17 @@ const AddFileModal: (val: AddFileModalProps) => React.ReactNode = ({
 
     const path = nameSplit.length === 0 ? [] : nameSplit.slice(0, -1);
     const name = nameSplit.length === 0 ? newFileInput : nameSplit.slice(-1)[0];
-    const newFile: File = {
-      content: "",
-      id: v4(),
-      name,
-      path,
-    };
+    // const newFile: File = {
+    //   content: "",
+    //   id: v4(),
+    //   name,
+    //   path,
+    // };
+    const newFile = new File()
+      .setContent("")
+      .setId(v4())
+      .setName(name)
+      .setPathList(path);
     addFile(newFile);
   };
 
