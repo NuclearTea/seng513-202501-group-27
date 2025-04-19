@@ -420,9 +420,9 @@ const file_filetree_proto_rawDesc = "" +
 	"\x06NODEJS\x10\x01\x12\t\n" +
 	"\x05FLASK\x10\x02\x12\b\n" +
 	"\x04JAVA\x10\x03\x12\b\n" +
-	"\x04RUBY\x10\x042J\n" +
-	"\vFileService\x12;\n" +
-	"\x06Upload\x12\x17.filetree.UploadRequest\x1a\x18.filetree.UploadResponseB\x15Z\x13./filetree;filetreeb\x06proto3"
+	"\x04RUBY\x10\x042L\n" +
+	"\vFileService\x12=\n" +
+	"\x06Upload\x12\x17.filetree.UploadRequest\x1a\x18.filetree.UploadResponse0\x01B\x15Z\x13./filetree;filetreeb\x06proto3"
 
 var (
 	file_filetree_proto_rawDescOnce sync.Once

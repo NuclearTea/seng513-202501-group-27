@@ -1,73 +1,90 @@
 package runtime
 
 import (
-	"context"
 	"fmt"
 	"math/rand"
 	"path/filepath"
+	"time"
+
 	pb "seng513-202501-group-27/gen/filetree"
 	nginx "seng513-202501-group-27/internal/nginx"
-	"time"
 )
 
 type Server struct {
 	pb.UnimplementedFileServiceServer
 }
 
-func (s *Server) Upload(ctx context.Context, req *pb.UploadRequest) (*pb.UploadResponse, error) {
+func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServer) error {
 	projectID := randomSlug(6)
 	projectDir := filepath.Join("/tmp/projects", projectID)
 
 	backend := req.ProjectType
 	if backend != pb.BackendType_NODEJS {
-		return &pb.UploadResponse{Status: "unsupported backend"}, nil
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
+		return nil
 	}
-
+	time.Sleep(5000 * time.Millisecond)
+	_ = stream.Send(&pb.UploadResponse{Status: "📁 Writing files..."})
 	packagePath, err := WriteDirectory(projectDir, req.GetRoot())
 	if err != nil {
-		return nil, fmt.Errorf("failed to write files: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to write files: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: "🔍 Extracting start command..."})
 	startCmd, err := ExtractStartCommand(packagePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to extract start command: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract start command: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: "📝 Generating Dockerfile..."})
 	if err := GenerateDockerfile(projectDir, startCmd); err != nil {
-		return nil, fmt.Errorf("failed to generate Dockerfile: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to generate Dockerfile: " + err.Error()})
+		return nil
 	}
 
 	imageName := "node-app-" + projectID
 	hostPort := assignPortFromSlug(projectID)
 
-	// ✅ Read internal container port from .env
+	_ = stream.Send(&pb.UploadResponse{Status: "📦 Reading port from .env..."})
 	envPath := filepath.Join(projectDir, ".env")
 	containerPort, err := DetectPortFromEnv(envPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to detect container port from .env: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to detect container port: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: "🐳 Building Docker image..."})
 	if err := BuildDockerImage(projectDir, imageName); err != nil {
-		return nil, fmt.Errorf("failed to build docker image: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to build docker image: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: fmt.Sprintf("🚀 Running container on port %d...", hostPort)})
 	if err := RunDockerContainer(imageName, hostPort, containerPort); err != nil {
-		return nil, fmt.Errorf("failed to run docker container: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to run container: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: "📡 Writing NGINX config..."})
 	if err := nginx.WriteNginxConfig(projectID, hostPort); err != nil {
-		return nil, fmt.Errorf("failed to write nginx config: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to write nginx config: " + err.Error()})
+		return nil
 	}
 
+	_ = stream.Send(&pb.UploadResponse{Status: "🔁 Reloading NGINX..."})
 	if err := nginx.ReloadNginx(); err != nil {
-		return nil, fmt.Errorf("failed to reload nginx: %w", err)
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to reload nginx: " + err.Error()})
+		return nil
 	}
 
-	fmt.Printf("[launch] %s → host:%d → container:%d\n", projectID, hostPort, containerPort)
-	return &pb.UploadResponse{
-		Status: "success",
-		Url:    fmt.Sprintf("http://%s.webide.site", projectID),
-	}, nil
+	url := fmt.Sprintf("http://%s.webide.site", projectID)
+	_ = stream.Send(&pb.UploadResponse{
+		Status: "✅ Deployment successful!",
+		Url:    url,
+	})
+	return nil
 }
 
 // randomSlug generates a random 6-character slug.

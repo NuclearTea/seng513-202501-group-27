@@ -41,7 +41,7 @@ export class FileServiceClient {
 
   methodDescriptorUpload = new grpcWeb.MethodDescriptor(
     '/filetree.FileService/Upload',
-    grpcWeb.MethodType.UNARY,
+    grpcWeb.MethodType.SERVER_STREAMING,
     filetree_pb.UploadRequest,
     filetree_pb.UploadResponse,
     (request: filetree_pb.UploadRequest) => {
@@ -52,34 +52,13 @@ export class FileServiceClient {
 
   upload(
     request: filetree_pb.UploadRequest,
-    metadata?: grpcWeb.Metadata | null): Promise<filetree_pb.UploadResponse>;
-
-  upload(
-    request: filetree_pb.UploadRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: filetree_pb.UploadResponse) => void): grpcWeb.ClientReadableStream<filetree_pb.UploadResponse>;
-
-  upload(
-    request: filetree_pb.UploadRequest,
-    metadata?: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: filetree_pb.UploadResponse) => void) {
-    if (callback !== undefined) {
-      return this.client_.rpcCall(
-        this.hostname_ +
-          '/filetree.FileService/Upload',
-        request,
-        metadata || {},
-        this.methodDescriptorUpload,
-        callback);
-    }
-    return this.client_.unaryCall(
-    this.hostname_ +
-      '/filetree.FileService/Upload',
-    request,
-    metadata || {},
-    this.methodDescriptorUpload);
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<filetree_pb.UploadResponse> {
+    return this.client_.serverStreaming(
+      this.hostname_ +
+        '/filetree.FileService/Upload',
+      request,
+      metadata || {},
+      this.methodDescriptorUpload);
   }
 
 }

@@ -7,17 +7,19 @@ import {
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useEffect, useState } from "react";
-import { useFileUpload } from "../../hooks/useFileService";
+import { useState } from "react";
+import { useFileService } from "../../hooks/useFileService";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
 import FileEditor from "../FileEditor/FileEditor";
+import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddFileModal, setShowAddFileModal] = useState(false);
+  const [showUploadStatusModal, setShowUploadStatusModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const {
     getFileByPath,
@@ -27,7 +29,8 @@ const CodeEditor = () => {
     selectedBackend,
   } = appStore();
 
-  const { uploadProject, status, loading, error, link } = useFileUpload();
+  const { uploadProject, error, link, loading, statusMessages } =
+    useFileService();
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -43,30 +46,14 @@ const CodeEditor = () => {
   };
 
   const handleNewFileButton = () => {
-    setShowModal(true);
+    setShowAddFileModal(true);
   };
 
   const handleRunButton = () => {
-    // sayHello("Ali");
     const asDir = buildDirectoryTree(files);
-    // console.log(asDir.toObject());
     uploadProject(asDir, selectedBackend);
+    setShowUploadStatusModal(true);
   };
-
-  useEffect(() => {
-    if (loading) {
-      messageApi.loading("Uploading Files", 2.5);
-      return;
-    }
-    if (error) {
-      messageApi.error("Something went wrong");
-      return;
-    }
-    if (!loading && !error && status) {
-      messageApi.destroy();
-      messageApi.success(`Status: ${status}\nLink: ${link}`);
-    }
-  }, [loading, error, status, link, messageApi]);
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },
@@ -134,7 +121,10 @@ const CodeEditor = () => {
             items={menuItems}
             onClick={handleMenuItemClick}
           />
-          <AddFileModal showModal={showModal} setShowModal={setShowModal} />
+          <AddFileModal
+            showModal={showAddFileModal}
+            setShowModal={setShowAddFileModal}
+          />
         </Sider>
         <Layout>
           <Content style={{ width: "100%", height: "100%" }}>
@@ -142,6 +132,14 @@ const CodeEditor = () => {
           </Content>
         </Layout>
       </Layout>
+      <UploadStatusModal
+        onClose={() => setShowUploadStatusModal(false)}
+        open={showUploadStatusModal}
+        error={error}
+        link={link}
+        loading={loading}
+        statusMessages={statusMessages}
+      />
     </Layout>
   );
 };

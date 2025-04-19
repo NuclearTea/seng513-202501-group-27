@@ -4,7 +4,9 @@ package filetree;
 
 option go_package = "./filetree;filetree";
 
-service FileService { rpc Upload(UploadRequest) returns (UploadResponse); }
+service FileService {
+  rpc Upload(UploadRequest) returns (stream UploadResponse);
+}
 
 message File {
   string content = 1;

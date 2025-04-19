@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileServiceClient } from "../proto/filetree/FiletreeServiceClientPb";
 import {
   Directory,
@@ -6,39 +6,53 @@ import {
   UploadResponse,
 } from "../proto/filetree/filetree_pb";
 import { ValidBackends, validBackendStrToEnum } from "../types/ValidBackends";
+import { ClientReadableStream } from "grpc-web";
 
 const client = new FileServiceClient("http://localhost:8081", null, {
   format: "text",
 });
 
-export const useFileUpload = () => {
-  const [status, setStatus] = useState<string | null>(null);
+export const useFileService = () => {
+  const [statusMessages, setStatusMessages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
-  const uploadProject = useCallback(
-    (rootDirectory: Directory, projectType: ValidBackends) => {
-      const request = new UploadRequest();
-      request.setRoot(rootDirectory);
-      request.setProjecttype(validBackendStrToEnum(projectType));
 
-      setLoading(true);
-      setStatus(null);
-      setError(null);
-      console.log(request.toObject());
-      client.upload(request, {}, (err, response: UploadResponse | null) => {
-        if (err) {
-          setError(err.message);
-        } else if (response) {
-          setStatus(response.getStatus());
-          setLink(response.getUrl());
-          console.log(response.toObject());
-        }
-        setLoading(false);
-      });
-    },
-    [],
-  );
+  const uploadProject = (root: Directory, backend: ValidBackends) => {
+    const request = new UploadRequest();
+    request.setRoot(root);
+    request.setProjecttype(validBackendStrToEnum(backend));
 
-  return { status, loading, error, link, uploadProject };
+    setStatusMessages([]);
+    setError(null);
+    setLink(null);
+    setLoading(true);
+    const stream = client.upload(request, {});
+
+    stream.on("data", (response: UploadResponse) => {
+      console.log(1, response);
+      const status = response.getStatus();
+      if (status) {
+        setStatusMessages((prev) => [...prev, status]);
+      }
+
+      const url = response.getUrl();
+      if (url) {
+        setLink(url);
+      }
+    });
+
+    stream.on("error", (err) => {
+      console.log(2, "error", err);
+      setError(err.message || "An error occurred");
+      setLoading(false);
+    });
+
+    stream.on("end", () => {
+      console.log(3, "end");
+      setLoading(false);
+    });
+  };
+
+  return { statusMessages, loading, error, link, uploadProject };
 };
