@@ -61,7 +61,7 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 	}
 
 	_ = stream.Send(&pb.UploadResponse{Status: fmt.Sprintf("🚀 Running container on port %d...", hostPort)})
-	if err := RunDockerContainer(imageName, hostPort, containerPort); err != nil {
+	if err := RunDockerContainer(imageName, imageName, hostPort, containerPort); err != nil {
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to run container: " + err.Error()})
 		return nil
 	}

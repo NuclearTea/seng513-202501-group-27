@@ -1,0 +1,19 @@
+
+syntax = "proto3";
+
+package logs;
+
+option go_package = "./dockerLogs;dockerLogs";
+
+service DockerLogService {
+  rpc StreamDockerLogs(DockerLogRequest) returns (stream DockerLogEntry);
+}
+
+message DockerLogRequest {
+  string container_id = 1; // Or use container name
+}
+
+message DockerLogEntry {
+  string message = 1;
+  string timestamp = 2; // optional ISO 8601 format
+}

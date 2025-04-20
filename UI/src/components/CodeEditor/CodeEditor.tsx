@@ -1,4 +1,5 @@
 import {
+  DockerOutlined,
   DownloadOutlined,
   FileAddOutlined,
   InfoCircleTwoTone,
@@ -8,7 +9,7 @@ import {
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFileService } from "../../hooks/useFileService";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
@@ -16,11 +17,14 @@ import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
 import FileEditor from "../FileEditor/FileEditor";
 import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
+import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
+import appNameFromURL from "../../utility/appNameFromURL";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showAddFileModal, setShowAddFileModal] = useState(false);
   const [showUploadStatusModal, setShowUploadStatusModal] = useState(false);
+  const [showDockerLogsModal, setShowDockerLogsModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const {
     getFileByPath,
@@ -32,6 +36,8 @@ const CodeEditor = () => {
 
   const { uploadProject, error, link, loading, statusMessages } =
     useFileService();
+  const containerId = appNameFromURL(link);
+
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -72,19 +78,29 @@ const CodeEditor = () => {
           style={{ flex: 1, minWidth: 0 }}
           onClick={(e) => console.log(e)}
         />
-        {(error || link || statusMessages.length || link) && (
-          <Button
-            onClick={() => setShowUploadStatusModal(true)}
-            icon={<InfoCircleTwoTone />}
-            type="primary"
-            size="large"
-            style={{
-              background: "#002F5C",
-              padding: "1rem 2rem",
-              marginRight: "1rem",
-            }}
-          />
-        )}
+        <Button
+          onClick={() => setShowDockerLogsModal(true)}
+          icon={<DockerOutlined />}
+          type="primary"
+          size="large"
+          style={{
+            background: "#002F5C",
+            padding: "1rem 2rem",
+            marginRight: "1rem",
+          }}
+        />
+        <Button
+          onClick={() => setShowUploadStatusModal(true)}
+          icon={<InfoCircleTwoTone />}
+          type="primary"
+          size="large"
+          style={{
+            background: "#002F5C",
+            padding: "1rem 2rem",
+            marginRight: "1rem",
+          }}
+          disabled={!(error || link || statusMessages.length || link)}
+        />
         <Button
           onClick={handleRunButton}
           style={{ background: "green", padding: "1rem 2rem" }}
@@ -148,6 +164,11 @@ const CodeEditor = () => {
           </Content>
         </Layout>
       </Layout>
+      <DockerLogsViewer
+        containerId={containerId || ""}
+        open={showDockerLogsModal && containerId !== null}
+        onClose={() => setShowDockerLogsModal(false)}
+      />
       <UploadStatusModal
         onClose={() => setShowUploadStatusModal(false)}
         open={showUploadStatusModal}
