@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { FileServiceClient } from "../proto/filetree/FiletreeServiceClientPb";
 import {
   Directory,
@@ -6,7 +6,6 @@ import {
   UploadResponse,
 } from "../proto/filetree/filetree_pb";
 import { ValidBackends, validBackendStrToEnum } from "../types/ValidBackends";
-import { ClientReadableStream } from "grpc-web";
 
 const client = new FileServiceClient("http://localhost:8081", null, {
   format: "text",

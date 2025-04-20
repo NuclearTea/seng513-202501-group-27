@@ -1,0 +1,14 @@
+
+server {
+    listen 80;
+    server_name 8wl8ql.webide.site;
+
+    location / {
+        proxy_pass http://host.docker.internal:9560;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}

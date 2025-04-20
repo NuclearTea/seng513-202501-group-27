@@ -23,7 +23,6 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
 		return nil
 	}
-	time.Sleep(5000 * time.Millisecond)
 	_ = stream.Send(&pb.UploadResponse{Status: "📁 Writing files..."})
 	packagePath, err := WriteDirectory(projectDir, req.GetRoot())
 	if err != nil {

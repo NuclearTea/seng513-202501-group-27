@@ -1,6 +1,7 @@
 import {
   DownloadOutlined,
   FileAddOutlined,
+  InfoCircleTwoTone,
   PlaySquareOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
@@ -71,12 +72,27 @@ const CodeEditor = () => {
           style={{ flex: 1, minWidth: 0 }}
           onClick={(e) => console.log(e)}
         />
+        {(error || link || statusMessages.length || link) && (
+          <Button
+            onClick={() => setShowUploadStatusModal(true)}
+            icon={<InfoCircleTwoTone />}
+            type="primary"
+            size="large"
+            style={{
+              background: "#002F5C",
+              padding: "1rem 2rem",
+              marginRight: "1rem",
+            }}
+          />
+        )}
         <Button
           onClick={handleRunButton}
           style={{ background: "green", padding: "1rem 2rem" }}
           icon={<PlaySquareOutlined />}
           type="primary"
           size="large"
+          disabled={link !== null}
+          loading={loading}
         />
       </Header>
       <Layout>
