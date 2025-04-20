@@ -1,14 +1,11 @@
-import {
-  DownloadOutlined,
-  FileAddOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { FileAddOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Menu, MenuProps, message } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import AddFileModal from "../AddFileModal/AddFileModal";
+import DownloadFilesButton from "./DownloadFilesButton";
 
 const CodeEditorMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -52,11 +49,7 @@ const CodeEditorMenu = () => {
           icon={<UploadOutlined />}
           type="primary"
         />
-        <Button
-          style={{ width: "40%", backgroundColor: "var(--dun)" }}
-          icon={<DownloadOutlined style={{ color: "black" }} />}
-          type="primary"
-        />
+        <DownloadFilesButton />
       </div>
       <Button
         style={{

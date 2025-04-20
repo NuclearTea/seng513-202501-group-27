@@ -1,22 +1,16 @@
 import {
   DockerOutlined,
-  DownloadOutlined,
-  FileAddOutlined,
   InfoCircleTwoTone,
   PlaySquareOutlined,
   RedoOutlined,
-  UploadOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import { useDockerService } from "../../hooks/useDockerService";
-import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import appSlugFromURL from "../../utility/appNameFromURL";
 import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
-import AddFileModal from "../AddFileModal/AddFileModal";
 import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
 import FileEditor from "../FileEditor/FileEditor";
 import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
