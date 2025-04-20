@@ -27,6 +27,7 @@ web:
 	# 	$(PROTO_FILES)
 	@mkdir -p $(TS_OUT_DIR)/greeter
 	@mkdir -p $(TS_OUT_DIR)/filetree
+	@mkdir -p $(TS_OUT_DIR)/dockerLogs
 	# Generate greeter
 	$(PROTOC) \
 		--proto_path=$(PROTO_DIR) \
@@ -39,6 +40,13 @@ web:
 		--js_out=import_style=commonjs:$(TS_OUT_DIR)/filetree \
 		--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(TS_OUT_DIR)/filetree \
 		$(PROTO_DIR)/filetree.proto
+	# Generate dockerLogs
+	$(PROTOC) \
+		--proto_path=$(PROTO_DIR) \
+		--js_out=import_style=commonjs:$(TS_OUT_DIR)/dockerLogs \
+		--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(TS_OUT_DIR)/dockerLogs \
+		$(PROTO_DIR)/dockerLogs.proto
+
 
 clean:
 	@echo "🧹 Cleaning generated proto output..."

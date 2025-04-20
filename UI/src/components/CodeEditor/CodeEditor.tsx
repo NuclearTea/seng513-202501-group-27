@@ -1,23 +1,31 @@
 import {
+  DockerOutlined,
   DownloadOutlined,
   FileAddOutlined,
+  InfoCircleTwoTone,
   PlaySquareOutlined,
+  RedoOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useEffect, useState } from "react";
-import { useFileUpload } from "../../hooks/useFileService";
+import { useState } from "react";
+import { useDockerService } from "../../hooks/useDockerService";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
+import appSlugFromURL from "../../utility/appNameFromURL";
 import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
+import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
 import FileEditor from "../FileEditor/FileEditor";
+import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddFileModal, setShowAddFileModal] = useState(false);
+  const [showUploadStatusModal, setShowUploadStatusModal] = useState(false);
+  const [showDockerLogsModal, setShowDockerLogsModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const {
     getFileByPath,
@@ -27,7 +35,16 @@ const CodeEditor = () => {
     selectedBackend,
   } = appStore();
 
-  const { uploadProject, status, loading, error, link } = useFileUpload();
+  const {
+    redeployProject,
+    uploadProject,
+    error,
+    link,
+    loading,
+    statusMessages,
+  } = useDockerService();
+  const [hasUploaded, setHasUploaded] = useState(Boolean(link));
+  const appSlug = appSlugFromURL(link);
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -43,30 +60,26 @@ const CodeEditor = () => {
   };
 
   const handleNewFileButton = () => {
-    setShowModal(true);
+    setShowAddFileModal(true);
   };
 
   const handleRunButton = () => {
-    // sayHello("Ali");
     const asDir = buildDirectoryTree(files);
-    // console.log(asDir.toObject());
     uploadProject(asDir, selectedBackend);
+    setShowUploadStatusModal(true);
+
+    setHasUploaded(true);
   };
 
-  useEffect(() => {
-    if (loading) {
-      messageApi.loading("Uploading Files", 2.5);
+  const handleRedeployButton = () => {
+    const asDir = buildDirectoryTree(files);
+    if (appSlug) {
+      redeployProject(appSlug, asDir, selectedBackend);
+      setShowUploadStatusModal(true);
       return;
     }
-    if (error) {
-      messageApi.error("Something went wrong");
-      return;
-    }
-    if (!loading && !error && status) {
-      messageApi.destroy();
-      messageApi.success(`Status: ${status}\nLink: ${link}`);
-    }
-  }, [loading, error, status, link, messageApi]);
+    messageApi.error("error getting app slug on redeploy");
+  };
 
   const items1: MenuProps["items"] = [
     { key: "1", label: "README.md" },
@@ -85,11 +98,35 @@ const CodeEditor = () => {
           onClick={(e) => console.log(e)}
         />
         <Button
-          onClick={handleRunButton}
-          style={{ background: "green", padding: "1rem 2rem" }}
-          icon={<PlaySquareOutlined />}
+          onClick={() => setShowDockerLogsModal(true)}
+          icon={<DockerOutlined />}
           type="primary"
           size="large"
+          style={{
+            background: "#002F5C",
+            padding: "1rem 2rem",
+            marginRight: "1rem",
+          }}
+        />
+        <Button
+          onClick={() => setShowUploadStatusModal(true)}
+          icon={<InfoCircleTwoTone />}
+          type="primary"
+          size="large"
+          style={{
+            background: "#002F5C",
+            padding: "1rem 2rem",
+            marginRight: "1rem",
+          }}
+          disabled={!(error || link || statusMessages.length || link)}
+        />
+        <Button
+          onClick={hasUploaded ? handleRedeployButton : handleRunButton}
+          style={{ background: "green", padding: "1rem 2rem" }}
+          icon={hasUploaded ? <RedoOutlined /> : <PlaySquareOutlined />}
+          type="primary"
+          size="large"
+          loading={loading}
         />
       </Header>
       <Layout>
@@ -134,7 +171,10 @@ const CodeEditor = () => {
             items={menuItems}
             onClick={handleMenuItemClick}
           />
-          <AddFileModal showModal={showModal} setShowModal={setShowModal} />
+          <AddFileModal
+            showModal={showAddFileModal}
+            setShowModal={setShowAddFileModal}
+          />
         </Sider>
         <Layout>
           <Content style={{ width: "100%", height: "100%" }}>
@@ -142,6 +182,19 @@ const CodeEditor = () => {
           </Content>
         </Layout>
       </Layout>
+      <DockerLogsViewer
+        containerId={appSlug || ""}
+        open={showDockerLogsModal && appSlug !== null}
+        onClose={() => setShowDockerLogsModal(false)}
+      />
+      <UploadStatusModal
+        onClose={() => setShowUploadStatusModal(false)}
+        open={showUploadStatusModal}
+        error={error}
+        link={link}
+        loading={loading}
+        statusMessages={statusMessages}
+      />
     </Layout>
   );
 };

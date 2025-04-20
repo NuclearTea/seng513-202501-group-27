@@ -6,10 +6,11 @@ import (
 
 	filetreepb "seng513-202501-group-27/gen/filetree"
 	// greeterpb "seng513-202501-group-27/gen/greeter"
-	"seng513-202501-group-27/internal/runtime"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	dockerLogspb "seng513-202501-group-27/gen/dockerLogs"
+	"seng513-202501-group-27/internal/logs"
+	"seng513-202501-group-27/internal/runtime"
 )
 
 func main() {
@@ -20,6 +21,7 @@ func main() {
 
 	s := grpc.NewServer()
 	filetreepb.RegisterFileServiceServer(s, &runtime.Server{})
+	dockerLogspb.RegisterDockerLogServiceServer(s, &logs.Server{})
 	reflection.Register(s)
 
 	log.Println("Server running on :8080")

@@ -1,0 +1,13 @@
+/nginx/sites-enabled/*
+!/nginx/sites-enabled/.gitkeep
+
+/nginx/sites/*
+!/nginx/sites/.gitkeep
+
+
+/projects/*
+!/projects/.gitkeep
+
+
+/gen/
+!/gen/.gitkeep

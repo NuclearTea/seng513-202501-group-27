@@ -4,7 +4,10 @@ package filetree;
 
 option go_package = "./filetree;filetree";
 
-service FileService { rpc Upload(UploadRequest) returns (UploadResponse); }
+service FileService {
+  rpc Upload(UploadRequest) returns (stream UploadResponse);
+  rpc Redeploy(ReuploadRequest) returns (stream UploadResponse);
+}
 
 message File {
   string content = 1;
@@ -41,4 +44,10 @@ message UploadRequest {
 message UploadResponse {
   string status = 1;
   string url = 2;
+}
+
+message ReuploadRequest {
+  string projectSlug = 1; // Slug to identify container
+  Directory root = 2;
+  BackendType projectType = 3;
 }
