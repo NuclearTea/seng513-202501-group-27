@@ -1,5 +1,5 @@
 import { FileAddOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Menu, MenuProps, message } from "antd";
+import { Button, Divider, Menu, MenuProps, message } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
@@ -41,26 +41,24 @@ const CodeEditorMenu = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-around",
-          marginBottom: "10%",
+          marginBottom: "5%",
+          alignItems: "center",
         }}
       >
-        <Button
-          style={{ width: "40%", backgroundColor: "var(--gray)" }}
-          icon={<UploadOutlined />}
-          type="primary"
-        />
+        {/* <Button */}
+        {/*   style={{ width: "40%", backgroundColor: "var(--gray)" }} */}
+        {/*   icon={<UploadOutlined />} */}
+        {/*   type="primary" */}
+        {/* /> */}
         <DownloadFilesButton />
+        <FileAddOutlined
+          style={{
+            fontSize: "32px",
+          }}
+          onClick={handleNewFileButton}
+        />
       </div>
-      <Button
-        style={{
-          width: "80%",
-          marginLeft: "10%",
-          marginBottom: "10%",
-          backgroundColor: "var(--anti-flash-white)",
-        }}
-        onClick={handleNewFileButton}
-        icon={<FileAddOutlined />}
-      />
+      <Divider type="horizontal" style={{ borderColor: "#1ECBE1" }} />
       <Menu
         theme="dark"
         defaultSelectedKeys={["1"]}
