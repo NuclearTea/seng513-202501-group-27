@@ -29,12 +29,7 @@ const DownloadFilesButton = () => {
     downloadZip(files);
   };
   return (
-    <Button
-      style={{ width: "40%", backgroundColor: "var(--dun)" }}
-      icon={<DownloadOutlined style={{ color: "black" }} />}
-      type="primary"
-      onClick={handleOnClick}
-    />
+    <DownloadOutlined onClick={handleOnClick} style={{ fontSize: "32px" }} />
   );
 };
 
