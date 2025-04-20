@@ -33,3 +33,4 @@ services:
       - ./docker/envoy.yaml:/etc/envoy/envoy.yaml
     depends_on:
       - grpc-server
+    restart: unless-stopped

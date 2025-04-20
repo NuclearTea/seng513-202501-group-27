@@ -121,14 +121,14 @@ var File_dockerLogs_proto protoreflect.FileDescriptor
 
 const file_dockerLogs_proto_rawDesc = "" +
 	"\n" +
-	"\x10dockerLogs.proto\x12\x04logs\"5\n" +
+	"\x10dockerLogs.proto\"5\n" +
 	"\x10DockerLogRequest\x12!\n" +
 	"\fcontainer_id\x18\x01 \x01(\tR\vcontainerId\"H\n" +
 	"\x0eDockerLogEntry\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x1c\n" +
-	"\ttimestamp\x18\x02 \x01(\tR\ttimestamp2V\n" +
-	"\x10DockerLogService\x12B\n" +
-	"\x10StreamDockerLogs\x12\x16.logs.DockerLogRequest\x1a\x14.logs.DockerLogEntry0\x01B\x19Z\x17./dockerLogs;dockerLogsb\x06proto3"
+	"\ttimestamp\x18\x02 \x01(\tR\ttimestamp2L\n" +
+	"\x10DockerLogService\x128\n" +
+	"\x10StreamDockerLogs\x12\x11.DockerLogRequest\x1a\x0f.DockerLogEntry0\x01B\x19Z\x17./dockerLogs;dockerLogsb\x06proto3"
 
 var (
 	file_dockerLogs_proto_rawDescOnce sync.Once
@@ -144,12 +144,12 @@ func file_dockerLogs_proto_rawDescGZIP() []byte {
 
 var file_dockerLogs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dockerLogs_proto_goTypes = []any{
-	(*DockerLogRequest)(nil), // 0: logs.DockerLogRequest
-	(*DockerLogEntry)(nil),   // 1: logs.DockerLogEntry
+	(*DockerLogRequest)(nil), // 0: DockerLogRequest
+	(*DockerLogEntry)(nil),   // 1: DockerLogEntry
 }
 var file_dockerLogs_proto_depIdxs = []int32{
-	0, // 0: logs.DockerLogService.StreamDockerLogs:input_type -> logs.DockerLogRequest
-	1, // 1: logs.DockerLogService.StreamDockerLogs:output_type -> logs.DockerLogEntry
+	0, // 0: DockerLogService.StreamDockerLogs:input_type -> DockerLogRequest
+	1, // 1: DockerLogService.StreamDockerLogs:output_type -> DockerLogEntry
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

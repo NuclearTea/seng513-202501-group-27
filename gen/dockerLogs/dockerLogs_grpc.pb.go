@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DockerLogService_StreamDockerLogs_FullMethodName = "/logs.DockerLogService/StreamDockerLogs"
+	DockerLogService_StreamDockerLogs_FullMethodName = "/DockerLogService/StreamDockerLogs"
 )
 
 // DockerLogServiceClient is the client API for DockerLogService service.
@@ -110,7 +110,7 @@ type DockerLogService_StreamDockerLogsServer = grpc.ServerStreamingServer[Docker
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DockerLogService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "logs.DockerLogService",
+	ServiceName: "DockerLogService",
 	HandlerType: (*DockerLogServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{

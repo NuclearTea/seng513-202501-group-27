@@ -13,7 +13,7 @@ type Server struct {
 }
 
 func (s *Server) StreamDockerLogs(req *pb.DockerLogRequest, stream pb.DockerLogService_StreamDockerLogsServer) error {
-	cmd := exec.Command("docker", "logs", "-f", req.GetContainerId())
+	cmd := exec.Command("docker", "logs", "-f", "node-app-"+req.GetContainerId())
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return err

@@ -86,6 +86,70 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 	return nil
 }
 
+func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_RedeployServer) error {
+	projectID := req.GetProjectSlug()
+	projectDir := filepath.Join("/tmp/projects", projectID)
+
+	backend := req.ProjectType
+	if backend != pb.BackendType_NODEJS {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
+		return nil
+	}
+
+	_ = stream.Send(&pb.UploadResponse{Status: "📁 Updating project files..."})
+	packagePath, err := WriteDirectory(projectDir, req.GetRoot())
+	if err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to write files: " + err.Error()})
+		return nil
+	}
+
+	_ = stream.Send(&pb.UploadResponse{Status: "🔍 Extracting start command..."})
+	startCmd, err := ExtractStartCommand(packagePath)
+	if err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract start command: " + err.Error()})
+		return nil
+	}
+
+	_ = stream.Send(&pb.UploadResponse{Status: "📝 Generating Dockerfile..."})
+	if err := GenerateDockerfile(projectDir, startCmd); err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to generate Dockerfile: " + err.Error()})
+		return nil
+	}
+
+	imageName := "node-app-" + projectID
+	hostPort := assignPortFromSlug(projectID)
+
+	_ = stream.Send(&pb.UploadResponse{Status: "📦 Reading port from .env..."})
+	envPath := filepath.Join(projectDir, ".env")
+	containerPort, err := DetectPortFromEnv(envPath)
+	if err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to detect container port: " + err.Error()})
+		return nil
+	}
+
+	_ = stream.Send(&pb.UploadResponse{Status: "🔁 Stopping previous container..."})
+	_ = StopDockerContainer(imageName)
+
+	_ = stream.Send(&pb.UploadResponse{Status: "🐳 Rebuilding Docker image..."})
+	if err := BuildDockerImage(projectDir, imageName); err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to build docker image: " + err.Error()})
+		return nil
+	}
+
+	_ = stream.Send(&pb.UploadResponse{Status: fmt.Sprintf("🚀 Starting container on port %d...", hostPort)})
+	if err := RunDockerContainer(imageName, imageName, hostPort, containerPort); err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to start container: " + err.Error()})
+		return nil
+	}
+
+	url := fmt.Sprintf("http://%s.webide.site", projectID)
+	_ = stream.Send(&pb.UploadResponse{
+		Status: "✅ Redeployment successful!",
+		Url:    url,
+	})
+	return nil
+}
+
 // randomSlug generates a random 6-character slug.
 func randomSlug(n int) string {
 	letters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")

@@ -37,3 +37,8 @@ func RunDockerContainer(containerName, imageName string, hostPort, containerPort
 
 	return cmd.Run()
 }
+
+func StopDockerContainer(imageName string) error {
+	cmd := exec.Command("docker", "rm", "-f", imageName)
+	return cmd.Run()
+}

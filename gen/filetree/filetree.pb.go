@@ -390,6 +390,66 @@ func (x *UploadResponse) GetUrl() string {
 	return ""
 }
 
+type ReuploadRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectSlug   string                 `protobuf:"bytes,1,opt,name=projectSlug,proto3" json:"projectSlug,omitempty"` // Slug to identify container
+	Root          *Directory             `protobuf:"bytes,2,opt,name=root,proto3" json:"root,omitempty"`
+	ProjectType   BackendType            `protobuf:"varint,3,opt,name=projectType,proto3,enum=filetree.BackendType" json:"projectType,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReuploadRequest) Reset() {
+	*x = ReuploadRequest{}
+	mi := &file_filetree_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReuploadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReuploadRequest) ProtoMessage() {}
+
+func (x *ReuploadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_filetree_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReuploadRequest.ProtoReflect.Descriptor instead.
+func (*ReuploadRequest) Descriptor() ([]byte, []int) {
+	return file_filetree_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ReuploadRequest) GetProjectSlug() string {
+	if x != nil {
+		return x.ProjectSlug
+	}
+	return ""
+}
+
+func (x *ReuploadRequest) GetRoot() *Directory {
+	if x != nil {
+		return x.Root
+	}
+	return nil
+}
+
+func (x *ReuploadRequest) GetProjectType() BackendType {
+	if x != nil {
+		return x.ProjectType
+	}
+	return BackendType_UNSPECIFIED
+}
+
 var File_filetree_proto protoreflect.FileDescriptor
 
 const file_filetree_proto_rawDesc = "" +
@@ -413,16 +473,21 @@ const file_filetree_proto_rawDesc = "" +
 	"\vprojectType\x18\x02 \x01(\x0e2\x15.filetree.BackendTypeR\vprojectType\":\n" +
 	"\x0eUploadResponse\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x10\n" +
-	"\x03url\x18\x02 \x01(\tR\x03url*I\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\"\x95\x01\n" +
+	"\x0fReuploadRequest\x12 \n" +
+	"\vprojectSlug\x18\x01 \x01(\tR\vprojectSlug\x12'\n" +
+	"\x04root\x18\x02 \x01(\v2\x13.filetree.DirectoryR\x04root\x127\n" +
+	"\vprojectType\x18\x03 \x01(\x0e2\x15.filetree.BackendTypeR\vprojectType*I\n" +
 	"\vBackendType\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\n" +
 	"\n" +
 	"\x06NODEJS\x10\x01\x12\t\n" +
 	"\x05FLASK\x10\x02\x12\b\n" +
 	"\x04JAVA\x10\x03\x12\b\n" +
-	"\x04RUBY\x10\x042L\n" +
+	"\x04RUBY\x10\x042\x8f\x01\n" +
 	"\vFileService\x12=\n" +
-	"\x06Upload\x12\x17.filetree.UploadRequest\x1a\x18.filetree.UploadResponse0\x01B\x15Z\x13./filetree;filetreeb\x06proto3"
+	"\x06Upload\x12\x17.filetree.UploadRequest\x1a\x18.filetree.UploadResponse0\x01\x12A\n" +
+	"\bRedeploy\x12\x19.filetree.ReuploadRequest\x1a\x18.filetree.UploadResponse0\x01B\x15Z\x13./filetree;filetreeb\x06proto3"
 
 var (
 	file_filetree_proto_rawDescOnce sync.Once
@@ -437,14 +502,15 @@ func file_filetree_proto_rawDescGZIP() []byte {
 }
 
 var file_filetree_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_filetree_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_filetree_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_filetree_proto_goTypes = []any{
-	(BackendType)(0),       // 0: filetree.BackendType
-	(*File)(nil),           // 1: filetree.File
-	(*Directory)(nil),      // 2: filetree.Directory
-	(*Child)(nil),          // 3: filetree.Child
-	(*UploadRequest)(nil),  // 4: filetree.UploadRequest
-	(*UploadResponse)(nil), // 5: filetree.UploadResponse
+	(BackendType)(0),        // 0: filetree.BackendType
+	(*File)(nil),            // 1: filetree.File
+	(*Directory)(nil),       // 2: filetree.Directory
+	(*Child)(nil),           // 3: filetree.Child
+	(*UploadRequest)(nil),   // 4: filetree.UploadRequest
+	(*UploadResponse)(nil),  // 5: filetree.UploadResponse
+	(*ReuploadRequest)(nil), // 6: filetree.ReuploadRequest
 }
 var file_filetree_proto_depIdxs = []int32{
 	3, // 0: filetree.Directory.children:type_name -> filetree.Child
@@ -452,13 +518,17 @@ var file_filetree_proto_depIdxs = []int32{
 	2, // 2: filetree.Child.directory:type_name -> filetree.Directory
 	2, // 3: filetree.UploadRequest.root:type_name -> filetree.Directory
 	0, // 4: filetree.UploadRequest.projectType:type_name -> filetree.BackendType
-	4, // 5: filetree.FileService.Upload:input_type -> filetree.UploadRequest
-	5, // 6: filetree.FileService.Upload:output_type -> filetree.UploadResponse
-	6, // [6:7] is the sub-list for method output_type
-	5, // [5:6] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	2, // 5: filetree.ReuploadRequest.root:type_name -> filetree.Directory
+	0, // 6: filetree.ReuploadRequest.projectType:type_name -> filetree.BackendType
+	4, // 7: filetree.FileService.Upload:input_type -> filetree.UploadRequest
+	6, // 8: filetree.FileService.Redeploy:input_type -> filetree.ReuploadRequest
+	5, // 9: filetree.FileService.Upload:output_type -> filetree.UploadResponse
+	5, // 10: filetree.FileService.Redeploy:output_type -> filetree.UploadResponse
+	9, // [9:11] is the sub-list for method output_type
+	7, // [7:9] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_filetree_proto_init() }
@@ -476,7 +546,7 @@ func file_filetree_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_filetree_proto_rawDesc), len(file_filetree_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
