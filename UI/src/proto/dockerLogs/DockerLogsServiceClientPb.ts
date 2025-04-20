@@ -1,5 +1,5 @@
 /**
- * @fileoverview gRPC-Web generated client stub for logs
+ * @fileoverview gRPC-Web generated client stub for 
  * @enhanceable
  * @public
  */
@@ -40,7 +40,7 @@ export class DockerLogServiceClient {
   }
 
   methodDescriptorStreamDockerLogs = new grpcWeb.MethodDescriptor(
-    '/logs.DockerLogService/StreamDockerLogs',
+    '/DockerLogService/StreamDockerLogs',
     grpcWeb.MethodType.SERVER_STREAMING,
     dockerLogs_pb.DockerLogRequest,
     dockerLogs_pb.DockerLogEntry,
@@ -55,7 +55,7 @@ export class DockerLogServiceClient {
     metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<dockerLogs_pb.DockerLogEntry> {
     return this.client_.serverStreaming(
       this.hostname_ +
-        '/logs.DockerLogService/StreamDockerLogs',
+        '/DockerLogService/StreamDockerLogs',
       request,
       metadata || {},
       this.methodDescriptorStreamDockerLogs);

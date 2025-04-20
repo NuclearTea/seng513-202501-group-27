@@ -61,5 +61,27 @@ export class FileServiceClient {
       this.methodDescriptorUpload);
   }
 
+  methodDescriptorRedeploy = new grpcWeb.MethodDescriptor(
+    '/filetree.FileService/Redeploy',
+    grpcWeb.MethodType.SERVER_STREAMING,
+    filetree_pb.ReuploadRequest,
+    filetree_pb.UploadResponse,
+    (request: filetree_pb.ReuploadRequest) => {
+      return request.serializeBinary();
+    },
+    filetree_pb.UploadResponse.deserializeBinary
+  );
+
+  redeploy(
+    request: filetree_pb.ReuploadRequest,
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<filetree_pb.UploadResponse> {
+    return this.client_.serverStreaming(
+      this.hostname_ +
+        '/filetree.FileService/Redeploy',
+      request,
+      metadata || {},
+      this.methodDescriptorRedeploy);
+  }
+
 }
 

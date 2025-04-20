@@ -24,7 +24,30 @@ const DockerLogsViewer: React.FC<DockerLogsModalProps> = ({
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [logs]);
+  const dockerLogs = (
+    containerId: string,
+    error: string | null,
+    logs: string[],
+  ): React.ReactNode => {
+    if (!containerId) {
+      return <Text type="secondary">No container selected.</Text>;
+    }
 
+    if (error) {
+      return <Text type="danger">Error: {error}</Text>;
+    }
+
+    if (logs.length === 0) {
+      return (
+        <div style={{ textAlign: "center" }}>
+          <Spin />
+          <Paragraph style={{ color: "#888" }}>Waiting for logs...</Paragraph>
+        </div>
+      );
+    }
+
+    return logs.map((line, idx) => <div key={idx}>{line}</div>);
+  };
   return (
     <Modal
       title="🔧 Docker Container Logs"
@@ -47,18 +70,7 @@ const DockerLogsViewer: React.FC<DockerLogsModalProps> = ({
           border: "1px solid #333",
         }}
       >
-        {!containerId ? (
-          <Text type="secondary">No container selected.</Text>
-        ) : error ? (
-          <Text type="danger">Error: {error}</Text>
-        ) : logs.length === 0 ? (
-          <div style={{ textAlign: "center" }}>
-            <Spin />
-            <Paragraph style={{ color: "#888" }}>Waiting for logs...</Paragraph>
-          </div>
-        ) : (
-          logs.map((line, idx) => <div key={idx}>{line}</div>)
-        )}
+        {dockerLogs(containerId, error, logs)}
       </div>
     </Modal>
   );

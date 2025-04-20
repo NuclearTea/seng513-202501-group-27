@@ -144,6 +144,34 @@ export namespace UploadResponse {
   }
 }
 
+export class ReuploadRequest extends jspb.Message {
+  getProjectslug(): string;
+  setProjectslug(value: string): ReuploadRequest;
+
+  getRoot(): Directory | undefined;
+  setRoot(value?: Directory): ReuploadRequest;
+  hasRoot(): boolean;
+  clearRoot(): ReuploadRequest;
+
+  getProjecttype(): BackendType;
+  setProjecttype(value: BackendType): ReuploadRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ReuploadRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ReuploadRequest): ReuploadRequest.AsObject;
+  static serializeBinaryToWriter(message: ReuploadRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ReuploadRequest;
+  static deserializeBinaryFromReader(message: ReuploadRequest, reader: jspb.BinaryReader): ReuploadRequest;
+}
+
+export namespace ReuploadRequest {
+  export type AsObject = {
+    projectslug: string,
+    root?: Directory.AsObject,
+    projecttype: BackendType,
+  }
+}
+
 export enum BackendType { 
   UNSPECIFIED = 0,
   NODEJS = 1,

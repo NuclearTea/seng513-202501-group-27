@@ -4,21 +4,22 @@ import {
   FileAddOutlined,
   InfoCircleTwoTone,
   PlaySquareOutlined,
+  RedoOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { useEffect, useState } from "react";
-import { useFileService } from "../../hooks/useFileService";
+import { useState } from "react";
+import { useDockerService } from "../../hooks/useDockerService";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
+import appSlugFromURL from "../../utility/appNameFromURL";
 import { buildDirectoryTree } from "../../utility/flatFilesToProtoDirectory";
 import AddFileModal from "../AddFileModal/AddFileModal";
+import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
 import FileEditor from "../FileEditor/FileEditor";
 import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
-import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
-import appNameFromURL from "../../utility/appNameFromURL";
 
 const CodeEditor = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,10 +35,16 @@ const CodeEditor = () => {
     selectedBackend,
   } = appStore();
 
-  const { uploadProject, error, link, loading, statusMessages } =
-    useFileService();
-  const containerId = appNameFromURL(link);
-
+  const {
+    redeployProject,
+    uploadProject,
+    error,
+    link,
+    loading,
+    statusMessages,
+  } = useDockerService();
+  const [hasUploaded, setHasUploaded] = useState(Boolean(link));
+  const appSlug = appSlugFromURL(link);
   const menuItems = buildMenuItemsFromFiles(files);
 
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -60,6 +67,18 @@ const CodeEditor = () => {
     const asDir = buildDirectoryTree(files);
     uploadProject(asDir, selectedBackend);
     setShowUploadStatusModal(true);
+
+    setHasUploaded(true);
+  };
+
+  const handleRedeployButton = () => {
+    const asDir = buildDirectoryTree(files);
+    if (appSlug) {
+      redeployProject(appSlug, asDir, selectedBackend);
+      setShowUploadStatusModal(true);
+      return;
+    }
+    messageApi.error("error getting app slug on redeploy");
   };
 
   const items1: MenuProps["items"] = [
@@ -102,12 +121,11 @@ const CodeEditor = () => {
           disabled={!(error || link || statusMessages.length || link)}
         />
         <Button
-          onClick={handleRunButton}
+          onClick={hasUploaded ? handleRedeployButton : handleRunButton}
           style={{ background: "green", padding: "1rem 2rem" }}
-          icon={<PlaySquareOutlined />}
+          icon={hasUploaded ? <RedoOutlined /> : <PlaySquareOutlined />}
           type="primary"
           size="large"
-          disabled={link !== null}
           loading={loading}
         />
       </Header>
@@ -165,8 +183,8 @@ const CodeEditor = () => {
         </Layout>
       </Layout>
       <DockerLogsViewer
-        containerId={containerId || ""}
-        open={showDockerLogsModal && containerId !== null}
+        containerId={appSlug || ""}
+        open={showDockerLogsModal && appSlug !== null}
         onClose={() => setShowDockerLogsModal(false)}
       />
       <UploadStatusModal
