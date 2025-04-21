@@ -4,6 +4,10 @@ import appStore from "../../state/app.store";
 import { File } from "../../proto/filetree/filetree_pb";
 import "./fileEditor.css";
 
+type FileEditorProps = {
+  fileToEdit: File | null;
+};
+
 const determineLanguage = (f: File): string => {
   const fileNameSplit = f.getName().split(".");
   const fileNameEnding = fileNameSplit[fileNameSplit.length - 1];
@@ -37,38 +41,39 @@ const determineLanguage = (f: File): string => {
   }
 };
 
-const FileEditor = () => {
-  const selectedFile = appStore().selectedFile;
+const FileEditor = ({ fileToEdit }: FileEditorProps) => {
   const updateFileContent = appStore().updateFileContent;
 
   const [content, setContentLocal] = useState<string>(
-    selectedFile?.getContent() ?? "",
+    fileToEdit?.getContent() ?? "",
   );
-  const selectedFileId = selectedFile?.getId();
+  const selectedFileId = fileToEdit?.getId();
   useEffect(() => {
-    if (selectedFile) {
-      setContentLocal(selectedFile.getContent());
+    if (fileToEdit) {
+      setContentLocal(fileToEdit.getContent());
     }
-  }, [selectedFile, selectedFileId]);
-
-  if (!selectedFile) {
-    return <div>Something went wrong with selecting your file</div>;
+  }, [fileToEdit, selectedFileId]);
+  if (!fileToEdit) {
+    return (
+      <div className="file-editor-container">
+        <div>Please select a file</div>
+      </div>
+    );
   }
-
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
       setContentLocal(value);
-      updateFileContent(selectedFile.getId(), value);
+      updateFileContent(fileToEdit.getId(), value);
     }
   };
 
-  const language = determineLanguage(selectedFile);
+  const language = determineLanguage(fileToEdit);
 
   return (
     <div className="file-editor-container">
       <MonacoEditor
         className="monaco-editor"
-        path={selectedFile.getName()}
+        path={fileToEdit.getName()}
         defaultLanguage={language}
         value={content}
         onChange={handleEditorChange}

@@ -2,17 +2,28 @@ package nginx
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 )
 
-// writeNginxConfig creates an nginx config file to route slug.webide.site → localhost:port
+// hostIP should be your local IP or "127.0.0.1" for default localhost testing
+var hostIP = os.Getenv("HOST_IP") // e.g., export HOST_IP=127.0.0.1
+
 func WriteNginxConfig(slug string, port int) error {
+	if hostIP == "" {
+		hostIP = "127.0.0.1"
+	}
+
+	log.Printf("[nginx] Using HOST_IP: %s\n", hostIP)
+	// slug.127.0.0.1.nip.io → maps to 127.0.0.1
+	domain := fmt.Sprintf("%s.%s.nip.io", slug, hostIP)
+
 	const nginxTemplate = `
 server {
     listen 80;
-    server_name %s.webide.site;
+    server_name %s;
 
     location / {
         proxy_pass http://host.docker.internal:%d;
@@ -25,7 +36,7 @@ server {
 }
 `
 
-	configContent := fmt.Sprintf(nginxTemplate, slug, port)
+	configContent := fmt.Sprintf(nginxTemplate, domain, port)
 
 	// Write config file to sites-available
 	confPath := filepath.Join("/etc/nginx/sites-available", slug)

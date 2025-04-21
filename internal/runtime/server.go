@@ -3,18 +3,25 @@ package runtime
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"path/filepath"
-	"time"
-
 	pb "seng513-202501-group-27/gen/filetree"
 	nginx "seng513-202501-group-27/internal/nginx"
+	"time"
 )
 
 type Server struct {
 	pb.UnimplementedFileServiceServer
 }
 
+// hostIP should be your local IP or "127.0.0.1" for default localhost testing
+var hostIP = os.Getenv("HOST_IP") // e.g., export HOST_IP=127.0.0.1
+
 func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServer) error {
+	if hostIP == "" {
+		hostIP = "127.0.0.1"
+	}
+
 	projectID := randomSlug(6)
 	projectDir := filepath.Join("/tmp/projects", projectID)
 
@@ -101,12 +108,15 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 		return nil
 	}
 
-	url := fmt.Sprintf("http://%s.webide.site", projectID)
+	url := fmt.Sprintf("http://%s.%s.nip.io", projectID, hostIP)
 	_ = stream.Send(&pb.UploadResponse{Status: "✅ Deployment successful!", Url: url})
 	return nil
 }
 
 func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_RedeployServer) error {
+	if hostIP == "" {
+		hostIP = "127.0.0.1"
+	}
 	projectID := req.GetProjectSlug()
 	projectDir := filepath.Join("/tmp/projects", projectID)
 
@@ -185,7 +195,8 @@ func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_Redeplo
 		return nil
 	}
 
-	url := fmt.Sprintf("http://%s.webide.site", projectID)
+	url := fmt.Sprintf("http://%s.%s.nip.io", projectID, hostIP)
+
 	_ = stream.Send(&pb.UploadResponse{
 		Status: "✅ Redeployment successful!",
 		Url:    url,
