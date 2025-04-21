@@ -1,11 +1,11 @@
 import { BackendType } from "../proto/filetree/filetree_pb";
 
-export type ValidBackends = "Node.JS" | "Python" | "Ruby" | "Java (Spring)";
+export type ValidBackends = "Node.JS" | "Flask" | "Ruby" | "Java (Spring)";
 
 export function isValidBackendStr(str: string): str is ValidBackends {
   switch (str) {
     case "Node.JS":
-    case "Python":
+    case "Flask":
     case "Ruby":
     case "Java (Spring)":
       return true;
@@ -30,7 +30,7 @@ export const validBackendStrToEnum = (str: ValidBackends): BackendType => {
   switch (str) {
     case "Node.JS":
       return BackendType.NODEJS;
-    case "Python":
+    case "Flask":
       return BackendType.FLASK;
     case "Ruby":
       return BackendType.RUBY;

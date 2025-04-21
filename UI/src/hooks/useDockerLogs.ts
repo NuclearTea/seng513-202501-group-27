@@ -12,7 +12,7 @@ const client = new DockerLogServiceClient("http://localhost:8081", null, {
 export const useDockerLogs = (containerId: string) => {
   const [logs, setLogs] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-
+  console.log("containerID", containerId);
   useEffect(() => {
     if (!containerId) return;
 

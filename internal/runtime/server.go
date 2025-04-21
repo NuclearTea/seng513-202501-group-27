@@ -19,10 +19,17 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 	projectDir := filepath.Join("/tmp/projects", projectID)
 
 	backend := req.ProjectType
-	if backend != pb.BackendType_NODEJS {
+	var imageName string
+	switch backend {
+	case pb.BackendType_NODEJS:
+		imageName = "node-app-" + projectID
+	case pb.BackendType_FLASK:
+		imageName = "flask-app-" + projectID
+	default:
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
 		return nil
 	}
+
 	_ = stream.Send(&pb.UploadResponse{Status: "📁 Writing files..."})
 	packagePath, err := WriteDirectory(projectDir, req.GetRoot())
 	if err != nil {
@@ -31,9 +38,26 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 	}
 
 	_ = stream.Send(&pb.UploadResponse{Status: "🔍 Extracting start command..."})
-	startCmd, err := ExtractStartCommand(packagePath)
-	if err != nil {
-		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract start command: " + err.Error()})
+
+	var startCmd string
+	switch backend {
+	case pb.BackendType_NODEJS:
+		startCmd, err = ExtractNodeStartCommand(packagePath)
+		if err != nil {
+			_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract Node.js start command: " + err.Error()})
+			return nil
+		}
+
+	case pb.BackendType_FLASK:
+		projectJsonPath := filepath.Join(projectDir, "project.json")
+		startCmd, err = ExtractPythonStartCommand(projectJsonPath)
+		if err != nil {
+			_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract Flask start command: " + err.Error()})
+			return nil
+		}
+
+	default:
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
 		return nil
 	}
 
@@ -43,11 +67,10 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 		return nil
 	}
 
-	imageName := "node-app-" + projectID
 	hostPort := assignPortFromSlug(projectID)
+	envPath := filepath.Join(projectDir, ".env")
 
 	_ = stream.Send(&pb.UploadResponse{Status: "📦 Reading port from .env..."})
-	envPath := filepath.Join(projectDir, ".env")
 	containerPort, err := DetectPortFromEnv(envPath)
 	if err != nil {
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to detect container port: " + err.Error()})
@@ -79,10 +102,7 @@ func (s *Server) Upload(req *pb.UploadRequest, stream pb.FileService_UploadServe
 	}
 
 	url := fmt.Sprintf("http://%s.webide.site", projectID)
-	_ = stream.Send(&pb.UploadResponse{
-		Status: "✅ Deployment successful!",
-		Url:    url,
-	})
+	_ = stream.Send(&pb.UploadResponse{Status: "✅ Deployment successful!", Url: url})
 	return nil
 }
 
@@ -90,8 +110,17 @@ func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_Redeplo
 	projectID := req.GetProjectSlug()
 	projectDir := filepath.Join("/tmp/projects", projectID)
 
+	imageName := "node-app-" + projectID
+	hostPort := assignPortFromSlug(projectID)
+
 	backend := req.ProjectType
-	if backend != pb.BackendType_NODEJS {
+
+	switch backend {
+	case pb.BackendType_NODEJS:
+		imageName = "node-app-" + projectID
+	case pb.BackendType_FLASK:
+		imageName = "flask-app-" + projectID
+	default:
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
 		return nil
 	}
@@ -104,9 +133,26 @@ func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_Redeplo
 	}
 
 	_ = stream.Send(&pb.UploadResponse{Status: "🔍 Extracting start command..."})
-	startCmd, err := ExtractStartCommand(packagePath)
-	if err != nil {
-		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract start command: " + err.Error()})
+
+	var startCmd string
+	switch backend {
+	case pb.BackendType_NODEJS:
+		startCmd, err = ExtractNodeStartCommand(packagePath)
+		if err != nil {
+			_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract Node.js start command: " + err.Error()})
+			return nil
+		}
+
+	case pb.BackendType_FLASK:
+		projectJsonPath := filepath.Join(projectDir, "project.json")
+		startCmd, err = ExtractPythonStartCommand(projectJsonPath)
+		if err != nil {
+			_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to extract Flask start command: " + err.Error()})
+			return nil
+		}
+
+	default:
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Unsupported backend"})
 		return nil
 	}
 
@@ -115,9 +161,6 @@ func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_Redeplo
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to generate Dockerfile: " + err.Error()})
 		return nil
 	}
-
-	imageName := "node-app-" + projectID
-	hostPort := assignPortFromSlug(projectID)
 
 	_ = stream.Send(&pb.UploadResponse{Status: "📦 Reading port from .env..."})
 	envPath := filepath.Join(projectDir, ".env")

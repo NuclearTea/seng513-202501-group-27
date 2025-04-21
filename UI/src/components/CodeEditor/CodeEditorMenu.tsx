@@ -1,5 +1,5 @@
-import { FileAddOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Divider, Menu, MenuProps, message } from "antd";
+import { FileAddOutlined } from "@ant-design/icons";
+import { Divider, Menu, MenuProps, message } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 import { buildMenuItemsFromFiles } from "../../LayoutFunction";

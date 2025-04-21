@@ -15,6 +15,22 @@ import DockerLogsViewer from "../DockerLogsViewer/DockerLogsViewer";
 import FileEditor from "../FileEditor/FileEditor";
 import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
 import CodeEditorMenu from "./CodeEditorMenu";
+import { ValidBackends } from "../../types/ValidBackends";
+
+const generateContainerId = (
+  appSlug: string | null,
+  backend: ValidBackends,
+) => {
+  if (!appSlug) return null;
+  switch (backend) {
+    case "Node.JS":
+      return `node-app-${appSlug}`;
+    case "Flask":
+      return `flask-app-${appSlug}`;
+    default:
+      return null;
+  }
+};
 
 const CodeEditor = () => {
   const [showUploadStatusModal, setShowUploadStatusModal] = useState(false);
@@ -31,7 +47,7 @@ const CodeEditor = () => {
   } = useDockerService();
   const [hasUploaded, setHasUploaded] = useState(Boolean(link));
   const appSlug = appSlugFromURL(link);
-
+  const containerId = generateContainerId(appSlug, selectedBackend);
   const handleRunButton = () => {
     const asDir = buildDirectoryTree(files);
     uploadProject(asDir, selectedBackend);
@@ -106,7 +122,7 @@ const CodeEditor = () => {
         </Layout>
       </Layout>
       <DockerLogsViewer
-        containerId={appSlug || ""}
+        containerId={containerId || ""}
         open={showDockerLogsModal && appSlug !== null}
         onClose={() => setShowDockerLogsModal(false)}
       />

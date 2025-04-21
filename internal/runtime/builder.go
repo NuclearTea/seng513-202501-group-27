@@ -5,16 +5,32 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func GenerateDockerfile(projectDir, startCmd string) error {
+	var baseImage, installCmd string
+
+	switch {
+	case strings.HasPrefix(startCmd, "node"):
+		baseImage = "node:22"
+		installCmd = "npm install"
+	case strings.HasPrefix(startCmd, "python"):
+		baseImage = "python:3.11-slim"
+		installCmd = "pip install -r requirements.txt"
+	default:
+		baseImage = "alpine"
+		installCmd = "# No install step"
+	}
+
 	content := fmt.Sprintf(`
-FROM node:22
+FROM %s
 WORKDIR /app
 COPY . .
-RUN npm install
+RUN %s
 CMD ["sh", "-c", "%s"]
-`, startCmd)
+`, baseImage, installCmd, startCmd)
+
 	return os.WriteFile(filepath.Join(projectDir, "Dockerfile"), []byte(content), 0644)
 }
 

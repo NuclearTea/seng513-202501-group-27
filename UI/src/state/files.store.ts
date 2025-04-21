@@ -3,6 +3,9 @@ import { File } from "../proto/filetree/filetree_pb";
 import { NodeJSInitFormData } from "../components/CreateProjectForm/NpmInitForm";
 import NodeJSInitFileStructure from "../utility/NodeJS.init";
 import { ValidBackends } from "../types/ValidBackends";
+import { FlaskInitFormData } from "../components/CreateProjectForm/FlaskInitForm";
+import { BackendFormDataMap } from "../components/CreateProjectForm/CreateProjectForm";
+import FlaskInitFileStructure from "../utility/Flask.init";
 
 export type FileSlice = {
   files: File[];
@@ -15,9 +18,9 @@ export type FileSlice = {
   setFiles: (files: File[]) => void;
   addFile: (file: File) => void;
   getFileByPath: (filePath: string) => File | null;
-  generateInitialFiles: (
-    selectedBackend: ValidBackends,
-    formData: NodeJSInitFormData,
+  generateInitialFiles: <T extends ValidBackends>(
+    selectedBackend: T,
+    formData: BackendFormDataMap[T],
   ) => File[];
 };
 
@@ -72,14 +75,16 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
     );
   },
 
-  generateInitialFiles: (selectedBackend: ValidBackends, formData) => {
+  generateInitialFiles: (selectedBackend, formData) => {
     let newFiles: File[] = [];
 
     switch (selectedBackend) {
       case "Node.JS":
-        newFiles = NodeJSInitFileStructure(formData);
+        newFiles = NodeJSInitFileStructure(formData as NodeJSInitFormData);
         break;
-      // Add more backends here
+      case "Flask":
+        newFiles = FlaskInitFileStructure(formData as FlaskInitFormData);
+        break;
     }
 
     set(() => ({
