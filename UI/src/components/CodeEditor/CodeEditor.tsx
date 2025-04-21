@@ -102,7 +102,6 @@ const CodeEditor = () => {
             padding: "1rem 2rem",
             marginRight: "1rem",
           }}
-          disabled={!(error || link || statusMessages.length || link)}
         />
         <Button
           onClick={hasUploaded ? handleRedeployButton : handleRunButton}
@@ -117,13 +116,13 @@ const CodeEditor = () => {
         <CodeEditorMenu />
         <Layout>
           <Content style={{ width: "100%", height: "100%" }}>
-            {selectedFile ? <FileEditor /> : <></>}
+            <FileEditor fileToEdit={selectedFile} />
           </Content>
         </Layout>
       </Layout>
       <DockerLogsViewer
         containerId={containerId || ""}
-        open={showDockerLogsModal && appSlug !== null}
+        open={showDockerLogsModal}
         onClose={() => setShowDockerLogsModal(false)}
       />
       <UploadStatusModal
