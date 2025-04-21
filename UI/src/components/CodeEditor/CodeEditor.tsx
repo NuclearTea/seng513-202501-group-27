@@ -123,7 +123,7 @@ const CodeEditor = () => {
       </Layout>
       <DockerLogsViewer
         containerId={containerId || ""}
-        open={showDockerLogsModal && appSlug !== null}
+        open={showDockerLogsModal}
         onClose={() => setShowDockerLogsModal(false)}
       />
       <UploadStatusModal

@@ -3,6 +3,10 @@
 
 /nginx/sites/*
 !/nginx/sites/.gitkeep
+# !/nginx/*.conf
+!/nginx/sites/default.conf
+
+!/nginx/sites-enabled/default.conf
 
 
 /projects/*
