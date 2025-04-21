@@ -35,7 +35,14 @@ const generateContainerId = (
 const CodeEditor = () => {
   const [showUploadStatusModal, setShowUploadStatusModal] = useState(false);
   const [showDockerLogsModal, setShowDockerLogsModal] = useState(false);
-  const { selectedFile, files, selectedBackend } = appStore();
+  const {
+    selectedFile,
+    files,
+    selectedBackend,
+    openFiles,
+    getFileById,
+    setSelectedFile,
+  } = appStore();
 
   const {
     redeployProject,
@@ -66,10 +73,17 @@ const CodeEditor = () => {
     message.error("error getting app slug on redeploy");
   };
 
-  const items1: MenuProps["items"] = [
-    { key: "1", label: "README.md" },
-    { key: "2", label: "index.js" },
-  ];
+  // const items1: MenuProps["items"] = [
+  //   { key: "1", label: "README.md" },
+  //   { key: "2", label: "index.js" },
+  // ];
+  const items1 = openFiles
+    .map((fileId) => {
+      const file = getFileById(fileId);
+      if (!file) return;
+      return { key: fileId, label: file.getName(), content: file.getContent() };
+    })
+    .filter((x) => x !== undefined && x !== null);
   return (
     <Layout style={{ minHeight: "100vh", minWidth: "100vh" }}>
       <Header style={{ display: "flex", alignItems: "center" }}>
@@ -79,7 +93,7 @@ const CodeEditor = () => {
           mode="horizontal"
           items={items1}
           style={{ flex: 1, minWidth: 0 }}
-          onClick={(e) => console.log(e)}
+          onClick={(e) => setSelectedFile(getFileById(e.key)!)} // must be true because the menu is made of files that must exist
         />
         <Button
           onClick={() => setShowDockerLogsModal(true)}

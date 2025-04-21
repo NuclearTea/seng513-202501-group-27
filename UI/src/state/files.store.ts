@@ -12,11 +12,15 @@ export type FileSlice = {
   selectedFile: File | null;
   content: string;
   selectedBackend: ValidBackends;
+  openFiles: File.AsObject["id"][];
+  addOpenFile: (newFileId: string) => void;
+  removeOpenFile: (removeFileId: string) => void;
   setSelectedBackend: (str: ValidBackends) => void;
   setSelectedFile: (file: File) => void;
   updateFileContent: (id: string, content: string) => void;
   setFiles: (files: File[]) => void;
   addFile: (file: File) => void;
+  getFileById: (id: string) => File | null;
   getFileByPath: (filePath: string) => File | null;
   generateInitialFiles: <T extends ValidBackends>(
     selectedBackend: T,
@@ -29,6 +33,25 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   selectedFile: null,
   content: "",
   selectedBackend: "Node.JS", // default
+  openFiles: [], // default
+  addOpenFile: (newFileId) => {
+    const { openFiles } = get();
+    const fileAlreadyOpen = Boolean(openFiles.find((x) => x === newFileId));
+    if (fileAlreadyOpen) {
+      console.error("File: ", newFileId, "already open");
+      return;
+    }
+    set({ openFiles: [...openFiles, newFileId] });
+  },
+  removeOpenFile: (removeFileId) => {
+    const { openFiles } = get();
+    const fileIsOpen = Boolean(openFiles.find((x) => x === removeFileId));
+    if (!fileIsOpen) {
+      console.error("File: ", removeFileId, "is not open, can't be removed");
+      return;
+    }
+    set({ openFiles: openFiles.filter((x) => x !== removeFileId) });
+  },
   setSelectedBackend: (str) => {
     set(() => ({ selectedBackend: str }));
   },
@@ -60,7 +83,10 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
     set((state) => ({
       files: [...state.files, file],
     })),
-
+  getFileById: (id) => {
+    const { files } = get();
+    return files.find((x) => x.getId() === id) ?? null;
+  },
   getFileByPath: (filePath: string) => {
     const { files } = get();
     const targetPath = filePath.toLowerCase();

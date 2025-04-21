@@ -1,4 +1,4 @@
-import MonacoEditor from "@monaco-editor/react";
+import { Editor } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import appStore from "../../state/app.store";
 import { File } from "../../proto/filetree/filetree_pb";
@@ -54,11 +54,7 @@ const FileEditor = ({ fileToEdit }: FileEditorProps) => {
     }
   }, [fileToEdit, selectedFileId]);
   if (!fileToEdit) {
-    return (
-      <div className="file-editor-container">
-        <div>Please select a file</div>
-      </div>
-    );
+    return <div className="file-editor-container">Error Retieving File</div>;
   }
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
@@ -71,10 +67,11 @@ const FileEditor = ({ fileToEdit }: FileEditorProps) => {
 
   return (
     <div className="file-editor-container">
-      <MonacoEditor
+      <Editor
+        saveViewState={false}
         className="monaco-editor"
-        path={fileToEdit.getName()}
-        defaultLanguage={language}
+        path={`${fileToEdit.getName()}-${fileToEdit.getPathList().toString()}`}
+        language={language}
         value={content}
         onChange={handleEditorChange}
         theme="vs-dark"
