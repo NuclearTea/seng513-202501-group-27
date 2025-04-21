@@ -30,6 +30,8 @@ const determineLanguage = (f: File): string => {
       return "markdown";
     case "json":
       return "json";
+    case "py":
+      return "python";
     default:
       return "markdown";
   }

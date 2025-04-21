@@ -2,8 +2,15 @@ import { message } from "antd";
 import appStore from "../../state/app.store";
 import { isValidBackendStr } from "../../types/ValidBackends";
 import "./CreateProjectForm.css";
-import NpmInitForm from "./NpmInitForm";
-import PythonInitForm from "./PythonInitForm";
+import FlaskInitForm, { FlaskInitFormData } from "./FlaskInitForm";
+import NpmInitForm, { NodeJSInitFormData } from "./NpmInitForm";
+
+export type BackendFormDataMap = {
+  Flask: FlaskInitFormData;
+  "Node.JS": NodeJSInitFormData;
+  Ruby: Record<symbol, unknown>;
+  "Java (Spring)": Record<symbol, unknown>;
+};
 
 const CreateProjectForm = () => {
   const { selectedBackend, setSelectedBackend } = appStore();
@@ -23,8 +30,8 @@ const CreateProjectForm = () => {
     switch (selectedBackend) {
       case "Node.JS":
         return <NpmInitForm />;
-      case "Python":
-        return <PythonInitForm />;
+      case "Flask":
+        return <FlaskInitForm />;
       default:
         return <div>Please select a backend to configure.</div>;
     }
@@ -36,7 +43,7 @@ const CreateProjectForm = () => {
       <select value={selectedBackend} onChange={handleSelectionChange}>
         <option value="">--Select a Backend--</option>
         <option value="Node.JS">Node.js</option>
-        <option value="Python">Python</option>
+        <option value="Flask">Flask</option>
         <option value="Ruby">Ruby</option>
         <option value="Java">Java</option>
         {/* Add more options as needed */}
