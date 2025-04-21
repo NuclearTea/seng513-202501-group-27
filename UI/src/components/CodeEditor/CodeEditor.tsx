@@ -81,7 +81,7 @@ const CodeEditor = () => {
     .map((fileId) => {
       const file = getFileById(fileId);
       if (!file) return;
-      return { key: fileId, label: file.getName(), content: file.getContent() };
+      return { key: fileId, label: file.getName() };
     })
     .filter((x) => x !== undefined && x !== null);
   return (
