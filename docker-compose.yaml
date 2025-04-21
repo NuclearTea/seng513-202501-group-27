@@ -1,4 +1,17 @@
 services:
+  ui:
+    build:
+      context: ./UI
+      dockerfile: Dockerfile
+      target: development # or production
+    ports:
+      - "3000:3000" # Dev server or Nginx
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./UI:/app
+      - /app/node_modules
+
   grpc-server:
     build:
       context: .
