@@ -102,7 +102,6 @@ const CodeEditor = () => {
             padding: "1rem 2rem",
             marginRight: "1rem",
           }}
-          disabled={!(error || link || statusMessages.length || link)}
         />
         <Button
           onClick={hasUploaded ? handleRedeployButton : handleRunButton}
@@ -123,7 +122,7 @@ const CodeEditor = () => {
       </Layout>
       <DockerLogsViewer
         containerId={containerId || ""}
-        open={showDockerLogsModal && appSlug !== null}
+        open={showDockerLogsModal}
         onClose={() => setShowDockerLogsModal(false)}
       />
       <UploadStatusModal

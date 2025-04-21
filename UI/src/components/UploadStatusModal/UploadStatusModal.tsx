@@ -22,7 +22,7 @@ const UploadStatusModal: React.FC<UploadStatusModalProps> = ({
 }) => {
   return (
     <Modal
-      title="🚀 Deploying Your Project"
+      title="Project Deployment Status"
       open={open}
       onCancel={onClose}
       footer={null}
