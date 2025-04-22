@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, MenuProps, message } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDockerService } from "../../hooks/useDockerService";
 import appStore from "../../state/app.store";
 import appSlugFromURL from "../../utility/appNameFromURL";
@@ -42,6 +42,8 @@ const CodeEditor = () => {
     selectedBackend,
     openFiles,
     activeKey,
+    appSlug,
+    setAppSlug,
     setActiveKey,
     getFileById,
     setSelectedFile,
@@ -56,7 +58,14 @@ const CodeEditor = () => {
     statusMessages,
   } = useDockerService();
   const [hasUploaded, setHasUploaded] = useState(Boolean(link));
-  const appSlug = appSlugFromURL(link);
+  useEffect(() => {
+    if (link) {
+      const val = appSlugFromURL(link);
+      if (val) {
+        setAppSlug(val);
+      }
+    }
+  }, [link, setAppSlug]);
   const containerId = generateContainerId(appSlug, selectedBackend);
   const handleRunButton = () => {
     const asDir = buildDirectoryTree(files);
