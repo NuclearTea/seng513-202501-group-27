@@ -14,6 +14,10 @@ export type FileSlice = {
   selectedBackend: ValidBackends;
   openFiles: File.AsObject["id"][];
   activeKey: string;
+  appSlug: string;
+  redeployCount: number;
+  incrementRedeployCount: () => void;
+  setAppSlug: (str: string) => void;
   setActiveKey: (str: string) => void;
   addOpenFile: (newFileId: string) => void;
   removeOpenFile: (removeFileId: string) => void;
@@ -37,6 +41,11 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   selectedBackend: "Node.JS", // default
   openFiles: [], // default
   activeKey: "",
+  appSlug: "",
+  redeployCount: 0,
+  incrementRedeployCount: () =>
+    set((state) => ({ redeployCount: state.redeployCount + 1 })),
+  setAppSlug: (str) => set({ appSlug: str }),
   setActiveKey: (str) => set({ activeKey: str }),
   addOpenFile: (newFileId) => {
     const { openFiles } = get();
