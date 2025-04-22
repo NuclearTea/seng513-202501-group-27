@@ -15,6 +15,8 @@ export type FileSlice = {
   openFiles: File.AsObject["id"][];
   activeKey: string;
   appSlug: string;
+  redeployCount: number;
+  incrementRedeployCount: () => void;
   setAppSlug: (str: string) => void;
   setActiveKey: (str: string) => void;
   addOpenFile: (newFileId: string) => void;
@@ -40,6 +42,9 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
   openFiles: [], // default
   activeKey: "",
   appSlug: "",
+  redeployCount: 0,
+  incrementRedeployCount: () =>
+    set((state) => ({ redeployCount: state.redeployCount + 1 })),
   setAppSlug: (str) => set({ appSlug: str }),
   setActiveKey: (str) => set({ activeKey: str }),
   addOpenFile: (newFileId) => {

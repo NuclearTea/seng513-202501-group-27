@@ -47,6 +47,7 @@ const CodeEditor = () => {
     setActiveKey,
     getFileById,
     setSelectedFile,
+    incrementRedeployCount,
   } = appStore();
 
   const {
@@ -78,6 +79,7 @@ const CodeEditor = () => {
   const handleRedeployButton = () => {
     const asDir = buildDirectoryTree(files);
     if (appSlug) {
+      incrementRedeployCount();
       redeployProject(appSlug, asDir, selectedBackend);
       setShowUploadStatusModal(true);
       return;
