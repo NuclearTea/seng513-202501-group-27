@@ -194,7 +194,10 @@ func (s *Server) Redeploy(req *pb.ReuploadRequest, stream pb.FileService_Redeplo
 		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to start container: " + err.Error()})
 		return nil
 	}
-
+	if err := nginx.ReloadNginx(); err != nil {
+		_ = stream.Send(&pb.UploadResponse{Status: "❌ Failed to reload nginx: " + err.Error()})
+		return nil
+	}
 	url := fmt.Sprintf("http://%s.%s.nip.io", projectID, hostIP)
 
 	_ = stream.Send(&pb.UploadResponse{
