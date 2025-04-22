@@ -22,7 +22,6 @@ const CodeEditorMenu = () => {
 
   const menuItems = buildMenuItemsFromFiles(files);
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
-    console.log(e);
     const file = getFileByPath(e.key);
     if (!file) {
       message.error(`Something went wrong accessing: ${e.key}`);
@@ -31,13 +30,11 @@ const CodeEditorMenu = () => {
     setSelectedFile(file);
     addOpenFile(file.getId());
     setActiveKey(computeActiveKey(file));
-    console.log(1);
   };
 
   const handleNewFileButton = () => {
     setShowAddFileModal(true);
   };
-  console.log("code editor menu", activeKey);
   return (
     <Sider
       collapsible

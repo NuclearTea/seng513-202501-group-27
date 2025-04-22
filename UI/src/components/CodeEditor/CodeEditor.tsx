@@ -94,7 +94,6 @@ const CodeEditor = () => {
     })
     .filter((x) => x !== undefined && x !== null);
 
-  console.log("code editor", activeKey);
   return (
     <Layout style={{ minHeight: "100vh", minWidth: "100vh" }}>
       <Header style={{ display: "flex", alignItems: "center" }}>

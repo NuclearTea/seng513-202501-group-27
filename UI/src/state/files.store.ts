@@ -42,7 +42,7 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
     const { openFiles } = get();
     const fileAlreadyOpen = Boolean(openFiles.find((x) => x === newFileId));
     if (fileAlreadyOpen) {
-      console.error("File: ", newFileId, "already open");
+      console.log("File: ", newFileId, "already open");
       return;
     }
     set({ openFiles: [...openFiles, newFileId] });
@@ -51,7 +51,7 @@ export const createFileSlice: StateCreator<FileSlice> = (set, get) => ({
     const { openFiles } = get();
     const fileIsOpen = Boolean(openFiles.find((x) => x === removeFileId));
     if (!fileIsOpen) {
-      console.error("File: ", removeFileId, "is not open, can't be removed");
+      console.log("File: ", removeFileId, "is not open, can't be removed");
       return;
     }
     set({ openFiles: openFiles.filter((x) => x !== removeFileId) });
