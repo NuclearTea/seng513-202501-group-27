@@ -1,116 +1,101 @@
-# seng513-202501-group-27 🌐 WebIDE Project Overview
+# SENG513 Winter 2025 Final Project - 🌐 Web IDE
 
-This project creates a **browser-based development environment** that lets users upload code (like a Node.js project), run it in the cloud, and access it via a unique subdomain like `https://abc123.webide.site`.
+Welcome to the **Web IDE Project** — a browser-based development environment that lets you create, edit, run, and manage code projects without installing anything on your computer. It's like having Visual Studio Code, a terminal, and a deployment server all inside your browser.
 
----
+## 📦 What This Project Includes
 
-## 🧠 What This Project Does
+This project has several parts working together to deliver a full-featured web development experience:
 
-1. A user uploads their Node.js project files from the browser.
-2. The backend server:
-   - Stores the files
-   - Builds a Docker container with the project
-   - Runs the container
-   - Makes it accessible through a subdomain like `abc123.webide.site`
-3. The user can visit that link and see their app running live.
+### 🖥️ Frontend (UI/)
 
----
+- **What it is**: The user interface you see in your browser.
+- **What it does**: Lets you create projects, write code, switch between files, and view output logs.
+- **Built with**: React (JavaScript framework).
 
-## 🖼️ Frontend – React App
+### 🧠 Backend Server (server/)
 
-The frontend is built using **React**, and it helps the user do the following:
+- **What it is**: The brain of the system.
+- **What it does**: Handles project creation, file uploads, and talks to Docker to run your code.
+- **Built with**: Go using gRPC (a fast communication method between programs).
 
-- Select which type of backend they want (currently supports Node.js)
-- Edit or review their project files
-- Submit their project to the backend for deployment
+### 📜 Protobuf Definitions (proto/)
 
-### 🗃️ How It Manages Data
+- **What it is**: A shared language between the frontend and backend.
+- **What it does**: Defines how different parts of the app talk to each other.
 
-The app uses a library called **Zustand** to manage file state:
+### ⚙️ Generated Code (gen/go/ & UI/proto)
 
-- It keeps track of uploaded files
-- Keeps the currently selected file
-- Lets the user change the content of a file
-- Sends all the project data to the backend using gRPC-Web
+- **What it is**: Auto-generated files from the protobuf definitions.
+- **What it does**: Enables Go and the browser to understand and use the protobuf services.
 
----
+### 🐳 Docker Support (Dockerfiles, Docker-Compose)
 
-## 📦 Protocol Buffers (proto)
+- **What it is**: Configuration files for running everything in containers.
+- **What it does**: Packages the app so you can run it easily without installing each part manually.
 
-This is the language used to describe what data is sent between the frontend and backend.
+### 🌐 NGINX Gateway (optional)
 
-The core messages include:
+- **What it is**: A traffic router that lets each user's project be available on its own unique web address (like `myproject.127.0.0.1.nip.io`).
+- **What it does**: Helps route incoming requests to the right container.
 
-- `File`: represents an individual file
-- `Directory`: represents folders with children (files or more folders)
-- `UploadRequest`: the full request to send the project and backend type
-- `UploadResponse`: gives back the deployment status and URL
+## 🚀 How to Run It with Docker
 
-Protobuf helps generate consistent code for both Go (backend) and TypeScript (frontend).
+Make sure you have **Docker** and **Docker Compose** installed on your computer.
 
----
-
-## 🧩 Backend – Go gRPC Server
-
-The Go backend does all the heavy lifting. When it receives a project, it:
-
-1. Writes the project files to disk
-2. Reads the `.env` file to figure out what port the project uses
-3. Creates a Dockerfile and builds a Docker image
-4. Runs that image in a Docker container
-5. Assigns a random subdomain
-6. Updates NGINX to route traffic from the subdomain to that container
-
----
-
-## 🚪 Accessing Your Project – NGINX
-
-**NGINX** is a web server. Here’s how we use it:
-
-- When a project is deployed, we write an NGINX config file for it
-- The config says: “If someone visits abc123.webide.site, forward them to this specific container running on a certain port”
-- Then we reload NGINX to apply the change
-
-This is what allows each app to be reachable on its own unique link.
-
----
-
-## 🧭 Routing gRPC from the Browser – Envoy
-
-**gRPC** normally doesn't work in the browser, so we use **Envoy** as a proxy.
-
-Envoy receives gRPC-Web requests from the browser and converts them into normal gRPC requests that the Go server can understand.
-
----
-
-## 🐳 Docker and Deployment
-
-Every app runs in a separate Docker container. The backend:
-
-- Builds the container based on the uploaded files
-- Assigns a random port to avoid conflicts
-- Starts the container
-- Makes sure the NGINX proxy routes traffic to the correct place
-
-The backend uses the Docker CLI from inside the container to manage all this.
-
----
-
-## 🔌 Local Development
-
-To run this project locally:
-
-1. Start all services with Docker Compose:
+### 1. Clone the Repository
 
 ```bash
-docker-compose up --build
+git clone https://github.com/NuclearTea/seng513-202501-group-27
+cd seng513-202501-group-27
 ```
 
-2. Add a test slug to your `/etc/hosts` file:
+### 2. Build and Start All Services
 
 ```bash
-127.0.0.1 abc123.webide.site
+docker compose up --build
 ```
 
-3. Send a project from the UI
-4. Visit http://abc123.webide.site
+This will:
+
+- Start the frontend (the UI)
+- Start the backend server
+- Start a reverse proxy if configured
+- Set up networking between everything
+
+### 3. Open in Your Browser
+
+Once it’s running, go to:
+
+```
+http://localhost:3000
+```
+
+You should see the Web IDE interface ready to use.
+
+## 💡 Features
+
+- Create projects using Node.js or Flask (more to come!)
+- View, edit, and save files
+- Download your project from the web
+- Run and redeploy projects in Docker containers
+- View real-time logs in the browser
+- Automatically assigns a URL for each running project (e.g., `project.127.0.0.1.nip.io`)
+
+## 🛠️ Tech Stack Summary
+
+| Layer        | Tool/Framework           | Description                        |
+| ------------ | ------------------------ | ---------------------------------- |
+| Frontend     | React + Zustand          | For UI and state management        |
+| Backend      | Go + gRPC                | For logic and communication        |
+| API Contract | Protocol Buffers (proto) | Defines how systems talk           |
+| Containers   | Docker + Docker Compose  | Runs the whole system              |
+| Proxy        | NGINX + nip.io           | Routes traffic to correct projects |
+
+## 🧰 Developer Notes
+
+- You can add support for other languages by defining new project templates and updating the backend.
+- The system uses `nip.io` for easy subdomain routing during local development — no `hosts` file editing required.
+
+```
+
+```

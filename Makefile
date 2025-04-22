@@ -19,12 +19,6 @@ go:
 
 web:
 	@echo "🌐 Generating Web (ts-proto) gRPC files..."
-	# @mkdir -p $(TS_OUT_DIR)
-	# $(PROTOC) \
-	# 	--proto_path=$(PROTO_DIR) \
-	# 	--js_out=import_style=commonjs,binary:$(TS_OUT_DIR) \
-	# 	--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(TS_OUT_DIR)\
-	# 	$(PROTO_FILES)
 	@mkdir -p $(TS_OUT_DIR)/greeter
 	@mkdir -p $(TS_OUT_DIR)/filetree
 	@mkdir -p $(TS_OUT_DIR)/dockerLogs

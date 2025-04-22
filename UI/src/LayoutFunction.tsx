@@ -1,8 +1,9 @@
 import { FileOutlined, FolderOutlined } from "@ant-design/icons";
-import { File } from "./proto/filetree/filetree_pb";
+import { Directory, File } from "./proto/filetree/filetree_pb";
 import { MenuProps } from "antd";
 import React from "react";
 import hasKey from "./utility/hasKey";
+import { computeActiveKey } from "./utility/computeActiveKey";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
@@ -76,7 +77,11 @@ export const buildMenuItemsFromFiles = (files: File[]): MenuItem[] => {
       const item = structure[key];
 
       if (item instanceof File) {
-        return getItem(item.getName(), currentPath.join("/"), <FileOutlined />);
+        return getItem(
+          item.getName(),
+          computeActiveKey(item),
+          <FileOutlined />,
+        );
       }
 
       const children = convertToMenuItems(item, currentPath);
