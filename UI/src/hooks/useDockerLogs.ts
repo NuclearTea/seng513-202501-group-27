@@ -19,6 +19,8 @@ export const useDockerLogs = (containerId: string) => {
   useEffect(() => {
     if (!containerId) return;
     console.log("getting logs");
+    setLogs([]);
+    setError(null);
     const timeout = setTimeout(() => {
       const request = new DockerLogRequest();
       request.setContainerId(containerId);
@@ -38,7 +40,7 @@ export const useDockerLogs = (containerId: string) => {
       stream.on("end", () => {
         console.log("Log stream ended");
       });
-    }, 2000);
+    }, 1000);
 
     return () => {
       clearTimeout(timeout);

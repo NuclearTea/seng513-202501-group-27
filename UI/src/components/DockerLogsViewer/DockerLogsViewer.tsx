@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Typography, Spin } from "antd";
 import { useDockerLogs } from "../../hooks/useDockerLogs";
+import appStore from "../../state/app.store";
 
 const { Text, Paragraph } = Typography;
 
@@ -15,6 +16,10 @@ const DockerLogsViewer: React.FC<DockerLogsModalProps> = ({
   open,
   onClose,
 }) => {
+  const { incrementRedeployCount } = appStore();
+  useEffect(() => {
+    incrementRedeployCount();
+  }, [incrementRedeployCount, open]);
   const { logs, error } = useDockerLogs(containerId);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
