@@ -6,30 +6,38 @@ import { buildMenuItemsFromFiles } from "../../LayoutFunction";
 import appStore from "../../state/app.store";
 import AddFileModal from "../AddFileModal/AddFileModal";
 import DownloadFilesButton from "./DownloadFilesButton";
+import { computeActiveKey } from "../../utility/computeActiveKey";
 
 const CodeEditorMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showAddFileModal, setShowAddFileModal] = useState(false);
-  const { files, setSelectedFile, getFileByPath, addOpenFile } = appStore();
+  const {
+    setActiveKey,
+    activeKey,
+    files,
+    setSelectedFile,
+    getFileByPath,
+    addOpenFile,
+  } = appStore();
 
   const menuItems = buildMenuItemsFromFiles(files);
-
   const handleMenuItemClick: MenuProps["onClick"] = (e) => {
-    if (!e) return;
-    const filePath = String(e.key).toLowerCase();
-    const file = getFileByPath(filePath);
+    console.log(e);
+    const file = getFileByPath(e.key);
     if (!file) {
       message.error(`Something went wrong accessing: ${e.key}`);
       return;
     }
     setSelectedFile(file);
     addOpenFile(file.getId());
+    setActiveKey(computeActiveKey(file));
+    console.log(1);
   };
 
   const handleNewFileButton = () => {
     setShowAddFileModal(true);
   };
-
+  console.log("code editor menu", activeKey);
   return (
     <Sider
       collapsible
@@ -56,7 +64,7 @@ const CodeEditorMenu = () => {
       <Divider type="horizontal" style={{ borderColor: "#1ECBE1" }} />
       <Menu
         theme="dark"
-        defaultSelectedKeys={["1"]}
+        selectedKeys={[activeKey]}
         mode="inline"
         items={menuItems}
         onClick={handleMenuItemClick}

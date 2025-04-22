@@ -16,6 +16,7 @@ import FileEditor from "../FileEditor/FileEditor";
 import UploadStatusModal from "../UploadStatusModal/UploadStatusModal";
 import CodeEditorMenu from "./CodeEditorMenu";
 import { ValidBackends } from "../../types/ValidBackends";
+import { computeActiveKey } from "../../utility/computeActiveKey";
 
 const generateContainerId = (
   appSlug: string | null,
@@ -40,6 +41,8 @@ const CodeEditor = () => {
     files,
     selectedBackend,
     openFiles,
+    activeKey,
+    setActiveKey,
     getFileById,
     setSelectedFile,
   } = appStore();
@@ -73,10 +76,16 @@ const CodeEditor = () => {
     message.error("error getting app slug on redeploy");
   };
 
-  // const items1: MenuProps["items"] = [
-  //   { key: "1", label: "README.md" },
-  //   { key: "2", label: "index.js" },
-  // ];
+  const handleMenuFileTab: MenuProps["onClick"] = (e) => {
+    // must be true because the menu is made of files that must exist
+    const file = getFileById(e.key);
+    if (!file) {
+      message.error(`Something went wrong accessing: ${e.key}`);
+      return;
+    }
+    setSelectedFile(file);
+    setActiveKey(computeActiveKey(file));
+  };
   const items1 = openFiles
     .map((fileId) => {
       const file = getFileById(fileId);
@@ -84,6 +93,8 @@ const CodeEditor = () => {
       return { key: fileId, label: file.getName() };
     })
     .filter((x) => x !== undefined && x !== null);
+
+  console.log("code editor", activeKey);
   return (
     <Layout style={{ minHeight: "100vh", minWidth: "100vh" }}>
       <Header style={{ display: "flex", alignItems: "center" }}>
@@ -91,9 +102,10 @@ const CodeEditor = () => {
         <Menu
           theme="dark"
           mode="horizontal"
+          selectedKeys={[activeKey]}
           items={items1}
           style={{ flex: 1, minWidth: 0 }}
-          onClick={(e) => setSelectedFile(getFileById(e.key)!)} // must be true because the menu is made of files that must exist
+          onClick={handleMenuFileTab}
         />
         <Button
           onClick={() => setShowDockerLogsModal(true)}
