@@ -49,7 +49,23 @@ git clone https://github.com/NuclearTea/seng513-202501-group-27
 cd seng513-202501-group-27
 ```
 
-### 2. Build and Start All Services
+### 2. Generate Protobuf Code
+
+If you've modified or added new `.proto` files, regenerate the Go and JavaScript client code using:
+
+```bash
+make
+```
+
+Before doing this, make sure you have the following tools installed:
+
+- **[protoc (Protocol Buffers Compiler)](https://grpc.io/docs/protoc-installation/)**
+- **[protoc-gen-go (Go plugin)](https://github.com/protocolbuffers/protobuf-go#installation)**
+- **[protoc-gen-js and protoc-gen-grpc-web (JavaScript/Web plugins)](https://grpc.io/docs/platforms/web/#code-generator-plugin)**
+
+These tools are required to compile `.proto` files into usable Go and JS/TS code.
+
+### 3. Build and Start All Services
 
 ```bash
 docker compose up --build
@@ -62,7 +78,7 @@ This will:
 - Start a reverse proxy if configured
 - Set up networking between everything
 
-### 3. Open in Your Browser
+### 4. Open in Your Browser
 
 Once it’s running, go to:
 
@@ -71,6 +87,8 @@ http://localhost:3000
 ```
 
 You should see the Web IDE interface ready to use.
+
+---
 
 ## 💡 Features
 
